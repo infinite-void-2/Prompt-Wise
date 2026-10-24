@@ -1,0 +1,25 @@
+{
+  "name": "optiprompt-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OptiPrompt — Prompt Optimization & Token Efficiency Engine",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm --workspace=server run dev",
+    "dev:client": "npm --workspace=client run dev",
+    "build": "npm --workspace=server run build && npm --workspace=client run build",
+    "test": "npm --workspace=server run test && npm --workspace=client run test",
+    "test:server": "npm --workspace=server run test",
+    "test:client": "npm --workspace=client run test",
+    "typecheck": "npm --workspace=server run typecheck && npm --workspace=client run typecheck",
+    "eval:golden": "npm --workspace=server run eval:golden",
+    "eval:live": "npm --workspace=server run eval:live"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

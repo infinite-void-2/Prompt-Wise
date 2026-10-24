@@ -1,0 +1,447 @@
+{
+  "timestamp": "2026-10-24T07:54:27.369Z",
+  "model": "gemini-2.5-flash",
+  "instructionVersion": "v1.2.0",
+  "mode": "offline_fixture",
+  "totalCases": 20,
+  "passedCases": 20,
+  "failedCases": 0,
+  "averageScores": {
+    "intentPreservation": 5,
+    "constraintPreservation": 5,
+    "clarityAndUsability": 5,
+    "compressionEfficiency": 3.5
+  },
+  "results": [
+    {
+      "caseId": "case-01",
+      "category": "Writing",
+      "name": "Simple prompt with filler",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 5,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 33,
+        "highContextTokens": 44,
+        "lowTokenTokens": 22,
+        "lowTokenReductionPercent": 33.3
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-02",
+      "category": "Data Extraction",
+      "name": "Strict JSON output",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 3,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 27,
+        "highContextTokens": 57,
+        "lowTokenTokens": 26,
+        "lowTokenReductionPercent": 3.7
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-03",
+      "category": "Reasoning",
+      "name": "Word limit with analogy",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 2,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 21,
+        "highContextTokens": 40,
+        "lowTokenTokens": 21,
+        "lowTokenReductionPercent": 0
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-04",
+      "category": "Coding",
+      "name": "Programming language/framework constraint",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 3,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 26,
+        "highContextTokens": 44,
+        "lowTokenTokens": 25,
+        "lowTokenReductionPercent": 3.8
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-05",
+      "category": "Writing",
+      "name": "Must-include list",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 3,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 20,
+        "highContextTokens": 26,
+        "lowTokenTokens": 18,
+        "lowTokenReductionPercent": 10
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-06",
+      "category": "Writing",
+      "name": "Must-not-include constraint",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 2,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 26,
+        "highContextTokens": 40,
+        "lowTokenTokens": 26,
+        "lowTokenReductionPercent": 0
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-07",
+      "category": "Data Extraction",
+      "name": "Exact schema and literal preservation",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 5,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 27,
+        "highContextTokens": 36,
+        "lowTokenTokens": 21,
+        "lowTokenReductionPercent": 22.2
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-08",
+      "category": "Coding",
+      "name": "Code/path/command preservation",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 5,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 20,
+        "highContextTokens": 25,
+        "lowTokenTokens": 14,
+        "lowTokenReductionPercent": 30
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-09",
+      "category": "Other",
+      "name": "Ambiguous request",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 2,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [
+        "AMBIGUOUS_INPUT",
+        "NO_SAFE_COMPRESSION"
+      ],
+      "tokenMetrics": {
+        "rawTokens": 4,
+        "highContextTokens": 36,
+        "lowTokenTokens": 13,
+        "lowTokenReductionPercent": -225
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-10",
+      "category": "Reasoning",
+      "name": "Contradictory requirements",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 2,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [
+        "CONTRADICTORY_CONSTRAINTS"
+      ],
+      "tokenMetrics": {
+        "rawTokens": 16,
+        "highContextTokens": 31,
+        "lowTokenTokens": 16,
+        "lowTokenReductionPercent": 0
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-11",
+      "category": "Writing",
+      "name": "Multilingual prompt (Marathi)",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 5,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 23,
+        "highContextTokens": 33,
+        "lowTokenTokens": 16,
+        "lowTokenReductionPercent": 30.4
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-12",
+      "category": "Summarization",
+      "name": "Quoted prompt injection",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 2,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [
+        "PROMPT_INJECTION_DEFENSE_TRIGGERED",
+        "PROMPT_INJECTION_DEFENSE_TRIGGERED"
+      ],
+      "tokenMetrics": {
+        "rawTokens": 26,
+        "highContextTokens": 48,
+        "lowTokenTokens": 30,
+        "lowTokenReductionPercent": -15.4
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-13",
+      "category": "Data Extraction",
+      "name": "Data extraction delimiters",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 5,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 33,
+        "highContextTokens": 44,
+        "lowTokenTokens": 23,
+        "lowTokenReductionPercent": 30.3
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-14",
+      "category": "Reasoning",
+      "name": "Mathematical correctness constraints",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 3,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 25,
+        "highContextTokens": 46,
+        "lowTokenTokens": 21,
+        "lowTokenReductionPercent": 16
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-15",
+      "category": "Creative",
+      "name": "Creative writing with boundaries",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 2,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 23,
+        "highContextTokens": 34,
+        "lowTokenTokens": 23,
+        "lowTokenReductionPercent": 0
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-16",
+      "category": "Summarization",
+      "name": "Source-bounded summarization",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 3,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 26,
+        "highContextTokens": 30,
+        "lowTokenTokens": 25,
+        "lowTokenReductionPercent": 3.8
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-17",
+      "category": "Writing",
+      "name": "Long, redundant prompt",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 5,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 83,
+        "highContextTokens": 34,
+        "lowTokenTokens": 17,
+        "lowTokenReductionPercent": 79.5
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-18",
+      "category": "Coding",
+      "name": "Regex and string literal",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 5,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 25,
+        "highContextTokens": 27,
+        "lowTokenTokens": 20,
+        "lowTokenReductionPercent": 20
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-19",
+      "category": "Coding",
+      "name": "No safe compression",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 5,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [
+        "NO_SAFE_COMPRESSION"
+      ],
+      "tokenMetrics": {
+        "rawTokens": 4,
+        "highContextTokens": 20,
+        "lowTokenTokens": 4,
+        "lowTokenReductionPercent": 0
+      },
+      "passed": true,
+      "failureReasons": []
+    },
+    {
+      "caseId": "case-20",
+      "category": "Data Extraction",
+      "name": "Tool/output constraints",
+      "intentPreservation": 5,
+      "constraintPreservation": 5,
+      "clarityAndUsability": 5,
+      "compressionEfficiency": 3,
+      "unsupportedAdditionsCount": 0,
+      "formatInvariantPassed": true,
+      "literalInvariantsPassed": true,
+      "warningsDetected": [],
+      "tokenMetrics": {
+        "rawTokens": 35,
+        "highContextTokens": 29,
+        "lowTokenTokens": 29,
+        "lowTokenReductionPercent": 17.1
+      },
+      "passed": true,
+      "failureReasons": []
+    }
+  ]
+}
