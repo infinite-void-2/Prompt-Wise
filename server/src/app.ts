@@ -12,6 +12,9 @@ import { ExecutorService } from './services/executor.service.js';
 import { GeminiService, IGeminiService } from './services/gemini.service.js';
 import { OptimizerService } from './services/optimizer.service.js';
 
+import { NemotronService } from './services/nemotron.service.js';
+import { UnifiedLLMService } from './services/unified-llm.service.js';
+
 export interface AppDependencies {
   geminiService?: IGeminiService;
   optimizerService?: OptimizerService;
@@ -22,9 +25,11 @@ export interface AppDependencies {
 export function createApp(deps: AppDependencies = {}): Express {
   const app = express();
 
-  const gemini = deps.geminiService || new GeminiService();
-  const optimizer = deps.optimizerService || new OptimizerService(gemini);
-  const executor = deps.executorService || new ExecutorService(gemini);
+  const llmService =
+    deps.geminiService ||
+    new UnifiedLLMService(new GeminiService(), new NemotronService());
+  const optimizer = deps.optimizerService || new OptimizerService(llmService);
+  const executor = deps.executorService || new ExecutorService(llmService);
 
   // Security & standard headers
   app.disable('x-powered-by');

@@ -1,8 +1,8 @@
 # OptiPrompt Golden Evaluation Report
 
-- **Timestamp**: 2026-10-24T12:21:54.534Z
+- **Timestamp**: 2026-10-24T14:30:37.082Z
 - **Evaluation Mode**: `offline_fixture`
-- **Target Model**: `gemini-3.8-flash`
+- **Target Model**: `gemini-3.5-flash-lite`
 - **Optimizer Instruction Version**: `v1.2.0`
 - **Summary**: **20/20 Passed** (0 failures)
 

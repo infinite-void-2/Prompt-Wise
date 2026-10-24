@@ -82,6 +82,9 @@ export interface OptimizationResult {
     lowToken: VerificationDetails;
   };
   timings?: StageTimings;
+  isAlreadyOptimized?: boolean;
+  optimizationStatus?: 'OPTIMIZED' | 'ALREADY_OPTIMIZED' | 'MINIMAL_GAINS';
+  targetProvider?: string;
 }
 
 export interface ExecutionUsage {
@@ -107,4 +110,13 @@ export interface ServiceHealth {
   hasApiKey: boolean;
   historyEnabled: boolean;
   version: string;
+  allowedModels?: string[];
+  providers?: {
+    nvidia?: boolean;
+    google: boolean;
+    openai: boolean;
+    anthropic: boolean;
+    deepseek: boolean;
+    groq: boolean;
+  };
 }

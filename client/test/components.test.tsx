@@ -256,10 +256,10 @@ describe('Frontend Component Tests', () => {
 
     await waitFor(() => {
       expect(api.executePrompt).toHaveBeenCalledWith(
-        {
+        expect.objectContaining({
           prompt: 'Write python function. USER EDITED',
           variantType: 'lowToken',
-        },
+        }),
         expect.any(Object)
       );
       expect(screen.getByText('def hello_world(): return "hello"')).toBeInTheDocument();

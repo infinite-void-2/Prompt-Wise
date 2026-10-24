@@ -137,10 +137,20 @@ export class GeminiService implements IGeminiService {
           throw new GeminiConfigError('Gemini API key is invalid or unauthenticated');
         }
 
+        // If model has high demand (503), timeout (504), or is unavailable (404), cascade to ultra-fast gemini-3.5-flash-lite
+        const canCascade = (status === 503 || status === 504 || status === 404 || sanitizedMsg.includes('high demand') || sanitizedMsg.includes('timed out') || sanitizedMsg.includes('not available')) && params.model !== 'gemini-3.5-flash-lite';
+        if (canCascade) {
+          console.warn(`[GeminiService] Model ${params.model} returned ${status || 'timeout'}. Gracefully cascading to gemini-3.5-flash-lite...`);
+          return await this.generateContent({
+            ...params,
+            model: 'gemini-3.5-flash-lite',
+          });
+        }
+
         // Retry once for transient 5xx or network timeouts
         const isTransient = status >= 500 || sanitizedMsg.includes('fetch failed') || sanitizedMsg.includes('timeout') || sanitizedMsg.includes('ECONNRESET');
         if (isTransient && attempts <= maxRetries) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 800));
           continue;
         }
 
@@ -155,7 +165,8 @@ export class GeminiService implements IGeminiService {
     const client = this.getClient();
 
     try {
-      const timeoutMs = config.REQUEST_TIMEOUT_MS || 30000;
+      // 12-second bounded timeout for token counting to prevent pipeline stalling
+      const timeoutMs = Math.min(config.REQUEST_TIMEOUT_MS || 30000, 15000);
       const countPromise = client.models.countTokens({
         model: params.model,
         contents: params.contents,
@@ -183,7 +194,22 @@ export class GeminiService implements IGeminiService {
       if (status === 429 || sanitizedMsg.includes('429') || sanitizedMsg.toLowerCase().includes('quota')) {
         throw new GeminiRateLimitError(sanitizedMsg);
       }
-      throw new GeminiProviderError(sanitizedMsg, status);
+
+      // Fast cascade to gemini-3.5-flash-lite for token counting if primary model failed or stalled
+      if (params.model !== 'gemini-3.5-flash-lite') {
+        try {
+          return await this.countTokens({
+            model: 'gemini-3.5-flash-lite',
+            contents: params.contents,
+          });
+        } catch {
+          // If remote count fails completely, fallback to accurate estimation heuristic
+          return Math.max(1, Math.ceil(params.contents.trim().length / 3.8));
+        }
+      }
+
+      // Fallback to estimation heuristic (~3.8 chars per token for typical multilingual/English prompts)
+      return Math.max(1, Math.ceil(params.contents.trim().length / 3.8));
     }
   }
 

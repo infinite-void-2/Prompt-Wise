@@ -30,6 +30,16 @@ export const App: React.FC = () => {
   const [health, setHealth] = useState<ServiceHealth | null>(null);
   const [healthLoading, setHealthLoading] = useState(true);
 
+  // Selected Model State
+  const [selectedModel, setSelectedModel] = useState<string>(() => {
+    return localStorage.getItem('optiprompt_selected_model') || 'nvidia/nemotron-3.5-bolt-e4b';
+  });
+
+  const handleSelectModel = (modelId: string) => {
+    setSelectedModel(modelId);
+    localStorage.setItem('optiprompt_selected_model', modelId);
+  };
+
   // Prompt input state
   const [rawPrompt, setRawPrompt] = useState('');
   const [category, setCategory] = useState<TaskCategory>('Auto');
@@ -63,7 +73,15 @@ export const App: React.FC = () => {
     let active = true;
     fetchHealth()
       .then((data) => {
-        if (active) setHealth(data);
+        if (active) {
+          setHealth(data);
+          // If user had legacy gemini-3.8-flash stored in localStorage, switch to active Nemotron model
+          const savedModel = localStorage.getItem('optiprompt_selected_model');
+          if (data.model && (!savedModel || savedModel === 'gemini-3.8-flash')) {
+            setSelectedModel(data.model);
+            localStorage.setItem('optiprompt_selected_model', data.model);
+          }
+        }
       })
       .catch(() => {
         if (active) setHealth(null);
@@ -91,18 +109,19 @@ export const App: React.FC = () => {
       if (latestRequestIdRef.current === reqTimestamp) {
         setProgressStep('Generating High-Context & Low-Token variants...');
       }
-    }, 600);
+    }, 400);
 
     const t2 = setTimeout(() => {
       if (latestRequestIdRef.current === reqTimestamp) {
-        setProgressStep('Counting tokens via Gemini Native API...');
+        setProgressStep('Counting tokens via native engine...');
       }
-    }, 1200);
+    }, 800);
 
     try {
       const result = await optimizePrompt({
         rawPrompt,
         taskCategory: category,
+        model: selectedModel,
       });
 
       // Avoid stale response overwriting
@@ -149,6 +168,7 @@ export const App: React.FC = () => {
         {
           prompt: textToExecute,
           variantType,
+          model: selectedModel,
         },
         controller.signal
       );
@@ -192,6 +212,8 @@ export const App: React.FC = () => {
         onUpdateAppName={handleUpdateAppName}
         health={health}
         healthLoading={healthLoading}
+        selectedModel={selectedModel}
+        onSelectModel={handleSelectModel}
       />
 
       {/* Main Workspace Container */}
@@ -206,7 +228,7 @@ export const App: React.FC = () => {
             Transform Raw Prompts into High-Precision & Token-Efficient Variants
           </h2>
           <p className="text-sm text-slate-400">
-            Compare Gemini-native token counts before executing. Never sacrifice core constraints or literal identifiers for arbitrary compression.
+            Compare native token counts before executing. Never sacrifice core constraints or literal identifiers for arbitrary compression.
           </p>
         </div>
 
@@ -231,6 +253,8 @@ export const App: React.FC = () => {
             onPromptChange={setRawPrompt}
             category={category}
             onCategoryChange={setCategory}
+            selectedModel={selectedModel}
+            onModelChange={handleSelectModel}
             onOptimize={handleOptimize}
             isOptimizing={isOptimizing}
             progressStep={progressStep}
@@ -244,6 +268,31 @@ export const App: React.FC = () => {
             className="space-y-6 pt-4 animate-fadeIn"
             aria-label="Comparison and Analytics"
           >
+            {/* Already Optimized Notification Banner */}
+            {(optimizationResult.isAlreadyOptimized || optimizationResult.optimizationStatus === 'ALREADY_OPTIMIZED') && (
+              <div
+                id="already-optimized-banner"
+                className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-teal-950/50 to-slate-900 border border-emerald-500/50 shadow-xl flex items-start space-x-3.5 animate-fadeIn"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-500/40 flex-shrink-0">
+                  <Sparkles className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2">
+                    <h4 className="text-sm font-bold text-white tracking-wide">
+                      Prompt is Already Optimized
+                    </h4>
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/40">
+                      Optimal Density & Structure
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    The submitted prompt is already concise, well-structured, and token-efficient. No unnecessary compression was required. You can execute the original prompt directly or explore the structured high-context variant below.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Warnings (if any) */}
             <WarningsBanner warnings={optimizationResult.warnings} />
 
@@ -333,14 +382,21 @@ export const App: React.FC = () => {
                 <VariantColumn
                   id="original"
                   title="Original Prompt"
-                  subtitle="Raw prompt submitted by user"
+                  subtitle={
+                    optimizationResult.isAlreadyOptimized
+                      ? '✨ Optimal in structure & token density'
+                      : 'Raw prompt submitted by user'
+                  }
                   variantType="original"
                   initialText={optimizationResult.rawPrompt}
                   currentText={originalText}
                   onTextChange={setOriginalText}
                   tokenCount={optimizationResult.metrics.rawTokens}
                   deltaPercent={null}
-                  isRecommended={optimizationResult.recommendation.variant === 'original'}
+                  isRecommended={
+                    optimizationResult.recommendation.variant === 'original' ||
+                    Boolean(optimizationResult.isAlreadyOptimized)
+                  }
                   onExecute={() => handleExecute(originalText, 'original')}
                   onStop={handleStopExecution}
                   isExecuting={isExecuting}

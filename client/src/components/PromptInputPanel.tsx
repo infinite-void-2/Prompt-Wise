@@ -8,6 +8,8 @@ interface PromptInputPanelProps {
   onPromptChange: (val: string) => void;
   category: TaskCategory;
   onCategoryChange: (cat: TaskCategory) => void;
+  selectedModel: string;
+  onModelChange: (model: string) => void;
   onOptimize: () => void;
   isOptimizing: boolean;
   progressStep: string | null;
@@ -30,6 +32,8 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
   onPromptChange,
   category,
   onCategoryChange,
+  selectedModel,
+  onModelChange,
   onOptimize,
   isOptimizing,
   progressStep,
@@ -49,25 +53,68 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
 
   return (
     <div className="glass-panel rounded-2xl p-5 shadow-xl border border-slate-800">
-      {/* Top Toolbar: Category & Example Prompts */}
+      {/* Top Toolbar: Category, Model & Example Prompts */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-        <div className="flex items-center space-x-2">
-          <label htmlFor="category-select" className="text-xs font-medium text-slate-400">
-            Task Category:
-          </label>
-          <select
-            id="category-select"
-            value={category}
-            onChange={(e) => onCategoryChange(e.target.value as TaskCategory)}
-            disabled={isOptimizing}
-            className="bg-slate-800/90 text-slate-200 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
-          >
-            {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center space-x-2">
+            <label htmlFor="category-select" className="text-xs font-medium text-slate-400">
+              Task Category:
+            </label>
+            <select
+              id="category-select"
+              value={category}
+              onChange={(e) => onCategoryChange(e.target.value as TaskCategory)}
+              disabled={isOptimizing}
+              className="bg-slate-800/90 text-slate-200 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
+            >
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <label htmlFor="model-select" className="text-xs font-medium text-slate-400">
+              Target Model:
+            </label>
+            <select
+              id="model-select"
+              value={selectedModel}
+              onChange={(e) => onModelChange(e.target.value)}
+              disabled={isOptimizing}
+              className="bg-slate-800/90 text-emerald-400 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium font-mono"
+            >
+              <optgroup label="NVIDIA Nemotron (⚡ Active · Free & Open-Source)">
+                <option value="nvidia/nemotron-3.5-bolt-e4b">Nemotron 3.5 Bolt (⚡ Ultra-Fast / Default)</option>
+                <option value="nvidia/nemotron-3-ultra-550b-a55b">Nemotron 3 Ultra 550B (🧠 Flagship)</option>
+                <option value="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning">Nemotron Nano Omni 30B (🔬 Reasoning)</option>
+              </optgroup>
+              <optgroup label="Google Gemini (⚡ Available)">
+                <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite (⚡ Ultra-Fast)</option>
+                <option value="gemini-3.5-flash">Gemini 3.5 Flash (🚀 Fast & Balanced)</option>
+                <option value="gemini-3.8-flash">Gemini 3.8 Flash (🧠 Reasoning)</option>
+                <option value="gemini-2.5-pro">Gemini 2.5 Pro (🔬 Deep Context)</option>
+              </optgroup>
+              <optgroup label="OpenAI (Bridge Ready)">
+                <option value="gpt-4o">GPT-4o (Omni Flagship)</option>
+                <option value="gpt-4o-mini">GPT-4o Mini (Cost-Efficient)</option>
+                <option value="o3-mini">o3-mini (Reasoning Tier)</option>
+              </optgroup>
+              <optgroup label="Anthropic (Bridge Ready)">
+                <option value="claude-3-5-sonnet">Claude 3.5 Sonnet (Premium Code)</option>
+                <option value="claude-3-5-haiku">Claude 3.5 Haiku (Sub-Second)</option>
+              </optgroup>
+              <optgroup label="DeepSeek (Bridge Ready)">
+                <option value="deepseek-chat">DeepSeek-V3 (671B MoE)</option>
+                <option value="deepseek-reasoner">DeepSeek-R1 (Open Reasoning)</option>
+              </optgroup>
+              <optgroup label="Meta / Open Weights">
+                <option value="llama-3.3-70b-versatile">Llama 3.3 70B (Groq LPU)</option>
+              </optgroup>
+            </select>
+          </div>
         </div>
 
         <div className="flex items-center space-x-2">

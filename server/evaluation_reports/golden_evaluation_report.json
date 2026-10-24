@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-10-24T12:21:54.534Z",
-  "model": "gemini-3.8-flash",
+  "timestamp": "2026-10-24T14:30:37.082Z",
+  "model": "gemini-3.5-flash-lite",
   "instructionVersion": "v1.2.0",
   "mode": "offline_fixture",
   "totalCases": 20,
@@ -25,6 +25,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED",
         "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
       ],
       "tokenMetrics": {
@@ -47,7 +48,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED"
+      ],
       "tokenMetrics": {
         "rawTokens": 27,
         "highContextTokens": 57,
@@ -69,6 +72,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED",
         "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
       ],
       "tokenMetrics": {
@@ -91,7 +95,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED"
+      ],
       "tokenMetrics": {
         "rawTokens": 26,
         "highContextTokens": 44,
@@ -133,7 +139,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED"
+      ],
       "tokenMetrics": {
         "rawTokens": 26,
         "highContextTokens": 40,
@@ -197,6 +205,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED",
         "AMBIGUOUS_INPUT",
         "NO_SAFE_COMPRESSION"
       ],
@@ -221,6 +230,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED",
         "CONTRADICTORY_CONSTRAINTS"
       ],
       "tokenMetrics": {
@@ -244,6 +254,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED",
         "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
       ],
       "tokenMetrics": {
@@ -267,6 +278,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED",
         "PROMPT_INJECTION_DEFENSE_TRIGGERED",
         "PROMPT_INJECTION_DEFENSE_TRIGGERED"
       ],
@@ -291,6 +303,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED",
         "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
       ],
       "tokenMetrics": {
@@ -334,7 +347,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED"
+      ],
       "tokenMetrics": {
         "rawTokens": 23,
         "highContextTokens": 34,
@@ -355,7 +370,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED"
+      ],
       "tokenMetrics": {
         "rawTokens": 26,
         "highContextTokens": 30,
@@ -377,6 +394,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED",
         "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
       ],
       "tokenMetrics": {
@@ -421,6 +439,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
+        "PROMPT_ALREADY_OPTIMIZED",
         "NO_SAFE_COMPRESSION"
       ],
       "tokenMetrics": {

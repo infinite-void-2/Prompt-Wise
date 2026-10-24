@@ -9,8 +9,15 @@ export interface AppConfig {
   NODE_ENV: string;
   PORT: number;
   CLIENT_ORIGIN: string;
+  DEFAULT_MODEL: string;
   GEMINI_API_KEY: string;
   GEMINI_MODEL: string;
+  NVIDIA_API_KEY: string;
+  NVIDIA_MODEL: string;
+  OPENAI_API_KEY: string;
+  ANTHROPIC_API_KEY: string;
+  DEEPSEEK_API_KEY: string;
+  GROQ_API_KEY: string;
   ALLOWED_MODELS: string[];
   MAX_PROMPT_CHARS: number;
   REQUEST_TIMEOUT_MS: number;
@@ -31,25 +38,54 @@ export interface AppConfig {
 }
 
 const DEFAULT_ALLOWED_MODELS = [
+  // NVIDIA Nemotron (Free & Open Source - Active)
+  'nvidia/nemotron-3.5-bolt-e4b',
+  'nvidia/nemotron-3-ultra-550b-a55b',
+  'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning',
+  'nvidia/llama-3.1-nemotron-70b-instruct',
+  'nemotron-3.5-bolt-e4b',
+  // Google Gemini (Fast & Advanced)
+  'gemini-3.5-flash-lite',
+  'gemini-3.5-flash',
+  'gemini-flash-lite-latest',
   'gemini-3.8-flash',
+  'gemini-2.5-pro',
   'gemini-2.5-flash',
   'gemini-2.0-flash',
-  'gemini-2.0-flash-lite',
-  'gemini-1.5-flash',
   'gemini-1.5-pro',
+  // OpenAI
+  'gpt-4o',
+  'gpt-4o-mini',
+  'o3-mini',
+  'o1-preview',
+  // Anthropic
+  'claude-3-5-sonnet',
+  'claude-3-5-haiku',
+  // DeepSeek
+  'deepseek-chat',
+  'deepseek-reasoner',
+  // Meta / Open Weights
+  'llama-3.3-70b-versatile',
 ];
 
 export const config: AppConfig = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: parseInt(process.env.PORT || '4000', 10),
   CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+  DEFAULT_MODEL: process.env.DEFAULT_MODEL || (process.env.NVIDIA_API_KEY ? 'nvidia/nemotron-3.5-bolt-e4b' : 'gemini-3.5-flash-lite'),
   GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
-  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
+  NVIDIA_API_KEY: process.env.NVIDIA_API_KEY || '',
+  NVIDIA_MODEL: process.env.NVIDIA_MODEL || 'nvidia/nemotron-3.5-bolt-e4b',
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
+  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
+  DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY || '',
+  GROQ_API_KEY: process.env.GROQ_API_KEY || '',
   ALLOWED_MODELS: process.env.ALLOWED_MODELS
     ? process.env.ALLOWED_MODELS.split(',').map((m) => m.trim())
     : DEFAULT_ALLOWED_MODELS,
   MAX_PROMPT_CHARS: parseInt(process.env.MAX_PROMPT_CHARS || '20000', 10),
-  REQUEST_TIMEOUT_MS: parseInt(process.env.REQUEST_TIMEOUT_MS || '30000', 10),
+  REQUEST_TIMEOUT_MS: parseInt(process.env.REQUEST_TIMEOUT_MS || '60000', 10),
   RATE_LIMIT_WINDOW_MS: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000', 10),
   RATE_LIMIT_MAX_REQUESTS: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '30', 10),
   MONGODB_URI: process.env.MONGODB_URI || '',

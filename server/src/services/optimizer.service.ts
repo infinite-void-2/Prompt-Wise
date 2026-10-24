@@ -169,6 +169,56 @@ export class OptimizerService {
     );
     const tokenCountingMs = Number((performance.now() - tokenStart).toFixed(2));
 
+    // Determine target provider for multi-model prompting
+    let targetProvider = 'NVIDIA Nemotron';
+    if (model.includes('nemotron') || model.startsWith('nvidia/')) {
+      targetProvider = 'NVIDIA Nemotron';
+    } else if (model.startsWith('gemini')) {
+      targetProvider = 'Google Gemini';
+    } else if (model.startsWith('gpt') || model.startsWith('o1') || model.startsWith('o3')) {
+      targetProvider = 'OpenAI';
+    } else if (model.startsWith('claude')) {
+      targetProvider = 'Anthropic';
+    } else if (model.startsWith('deepseek')) {
+      targetProvider = 'DeepSeek';
+    } else if (model.startsWith('llama')) {
+      targetProvider = 'Meta / Groq';
+    }
+
+    // Determine if prompt is already optimized
+    const lowTokenSavings = metrics.lowTokenReductionPercent;
+    const hasStructureMarkers = /\b(Role|Context|Objective|Constraints|Format|Instructions):/i.test(rawPrompt);
+    const hasNoFillers = !/\b(please|kindly|could you|can you|i want you to|help me to|compose a|write a message to)\b/i.test(rawPrompt);
+    const isMinimalOrNoCompression =
+      warnings.some((w) => w.code === 'NO_SAFE_COMPRESSION') ||
+      output.recommendation.variant === 'original' ||
+      finalRecommendation.variant === 'original' ||
+      hasStructureMarkers ||
+      (lowTokenSavings !== null && lowTokenSavings <= 8 && hasNoFillers) ||
+      (rawPrompt.length < 100 && lowTokenSavings !== null && lowTokenSavings <= 10);
+
+    let isAlreadyOptimized = false;
+    let optimizationStatus: 'OPTIMIZED' | 'ALREADY_OPTIMIZED' | 'MINIMAL_GAINS' = 'OPTIMIZED';
+
+    if (isMinimalOrNoCompression) {
+      isAlreadyOptimized = true;
+      optimizationStatus = 'ALREADY_OPTIMIZED';
+      if (!warnings.some((w) => w.code === 'PROMPT_ALREADY_OPTIMIZED')) {
+        warnings.unshift({
+          code: 'PROMPT_ALREADY_OPTIMIZED',
+          message: 'The submitted prompt is already concise, structured, and token-efficient. No unnecessary compression was applied.',
+        });
+      }
+      if (finalRecommendation.variant === 'lowToken' && (lowTokenSavings === null || lowTokenSavings <= 5)) {
+        finalRecommendation = {
+          variant: 'original',
+          reason: 'The original prompt is already optimal in structure and token density. Retaining original prompt is recommended.',
+        };
+      }
+    } else if (lowTokenSavings !== null && lowTokenSavings < 10) {
+      optimizationStatus = 'MINIMAL_GAINS';
+    }
+
     const totalMs = Number((performance.now() - totalStart).toFixed(2));
     const timings: StageTimings = {
       totalMs,
@@ -194,6 +244,9 @@ export class OptimizerService {
         lowToken: lowTokenVerification,
       },
       timings,
+      isAlreadyOptimized,
+      optimizationStatus,
+      targetProvider,
     };
   }
 
@@ -266,11 +319,12 @@ export class OptimizerService {
   }
 
   private resolveModel(requestedModel?: string): string {
-    if (!requestedModel) return config.GEMINI_MODEL;
+    const defaultModel = config.DEFAULT_MODEL || config.GEMINI_MODEL;
+    if (!requestedModel) return defaultModel;
     if (config.ALLOWED_MODELS.includes(requestedModel)) {
       return requestedModel;
     }
-    return config.GEMINI_MODEL;
+    return defaultModel;
   }
 
   private detectPromptInjection(prompt: string): boolean {

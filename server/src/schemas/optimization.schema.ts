@@ -118,6 +118,9 @@ export const OptimizationResultSchema = z.object({
     })
     .optional(),
   timings: StageTimingsSchema.optional(),
+  isAlreadyOptimized: z.boolean().default(false),
+  optimizationStatus: z.enum(['OPTIMIZED', 'ALREADY_OPTIMIZED', 'MINIMAL_GAINS']).default('OPTIMIZED'),
+  targetProvider: z.string().optional(),
 });
 
 export type OptimizationResult = z.infer<typeof OptimizationResultSchema>;

@@ -5,7 +5,8 @@ const app = createApp();
 
 const server = app.listen(config.PORT, () => {
   console.log(`[OptiPrompt Server] Running on http://localhost:${config.PORT}`);
-  console.log(`[OptiPrompt Server] Configured Model: ${config.GEMINI_MODEL}`);
+  console.log(`[OptiPrompt Server] Configured Default Model: ${config.DEFAULT_MODEL || config.GEMINI_MODEL}`);
+  console.log(`[OptiPrompt Server] NVIDIA Nemotron API Key Configured: ${Boolean(config.NVIDIA_API_KEY)}`);
   console.log(`[OptiPrompt Server] Gemini API Key Configured: ${Boolean(config.GEMINI_API_KEY)}`);
   console.log(`[OptiPrompt Server] History Persistence: ${config.ENABLE_PROMPT_HISTORY ? 'Enabled' : 'Disabled (No-DB MVP)'}`);
 });

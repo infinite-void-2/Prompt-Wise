@@ -44,9 +44,15 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     code = 'RATE_LIMIT_EXCEEDED';
     message = 'The AI provider rate limit was exceeded. Please retry in a few moments.';
   } else if (err instanceof GeminiProviderError) {
-    statusCode = 502;
+    statusCode = err.statusCode || 502;
     code = 'PROVIDER_ERROR';
-    message = 'The AI provider returned an error processing your request. Please try again.';
+    if (err.message && (err.message.includes('high demand') || err.message.includes('UNAVAILABLE'))) {
+      message = 'The Gemini model is temporarily experiencing high demand on Google\'s servers. Please retry in a few moments.';
+    } else if (err.message && err.message.includes('timed out')) {
+      message = 'The AI request timed out due to high network latency. Please retry.';
+    } else {
+      message = 'The AI provider returned an error processing your request. Please try again.';
+    }
   } else if (err?.type === 'entity.too.large') {
     statusCode = 413;
     code = 'PAYLOAD_TOO_LARGE';
