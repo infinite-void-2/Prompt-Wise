@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Copy, Check, Play, RotateCcw, Sparkles, Edit3, Square, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Copy, Check, Play, RotateCcw, Sparkles, Edit3, Square, ShieldCheck, AlertTriangle, Cpu } from 'lucide-react';
+import { getModelDisplayName } from '../lib/models.js';
 import { VerificationDetails } from '../types/index.js';
 
 interface VariantColumnProps {
@@ -19,12 +20,15 @@ interface VariantColumnProps {
   isCurrentExecuting?: boolean;
   verificationDetails?: VerificationDetails;
   accentColor: 'slate' | 'sky' | 'emerald';
+  generatingModel?: string;
+  targetProvider?: string;
 }
 
 export const VariantColumn: React.FC<VariantColumnProps> = ({
   id,
   title,
   subtitle,
+  variantType,
   initialText,
   currentText,
   onTextChange,
@@ -37,9 +41,12 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
   isCurrentExecuting = false,
   verificationDetails,
   accentColor,
+  generatingModel,
+  targetProvider,
 }) => {
   const [copied, setCopied] = useState(false);
   const isEdited = currentText.trim() !== initialText.trim();
+  const modelInfo = getModelDisplayName(generatingModel);
 
   const handleCopy = async () => {
     try {
@@ -100,28 +107,41 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
                     : 'bg-slate-800 text-slate-400'
                 }`}
               >
-                {deltaPercent > 0 ? `-${deltaPercent}%` : `+${Math.abs(deltaPercent)}%`}
+                {deltaPercent > 0 ? `-${deltaPercent}%` : deltaPercent === 0 ? '0%' : `+${Math.abs(deltaPercent)}%`}
               </span>
             )}
           </div>
         </div>
         <p className="text-[11px] text-slate-400 leading-tight">{subtitle}</p>
 
-        {verificationDetails && (
-          <div className="mt-2 flex items-center gap-1.5">
-            {verificationDetails.passed ? (
+        {/* Model Attribution & Verification Badges */}
+        <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[10px]">
+          {variantType === 'original' ? (
+            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-slate-800/90 border border-slate-700 text-slate-300 font-medium">
+              <span>Source: User Input</span>
+            </span>
+          ) : (
+            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 font-medium">
+              <Cpu className="w-3 h-3 text-emerald-400" />
+              <span>Optimized by: <strong>{modelInfo.name}</strong></span>
+              <span className="text-emerald-400/70 font-mono text-[9px]">({targetProvider || modelInfo.providerName} · {generatingModel || 'nvidia/nemotron-3.5-bolt-e4b'})</span>
+            </span>
+          )}
+
+          {verificationDetails && (
+            verificationDetails.passed ? (
               <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-[10px] font-medium">
                 <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                <span>Verified: Hard Invariants Intact</span>
+                <span>Verified: Invariants Intact</span>
               </span>
             ) : (
               <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/25 text-rose-400 text-[10px] font-medium">
                 <AlertTriangle className="w-3 h-3 text-rose-400" />
-                <span>Verification Gated (Missing Literals)</span>
+                <span>Verification Gated</span>
               </span>
-            )}
-          </div>
-        )}
+            )
+          )}
+        </div>
       </div>
 
       {/* Editor & Content Area */}

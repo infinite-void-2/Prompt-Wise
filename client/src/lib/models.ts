@@ -183,3 +183,92 @@ export const SUPPORTED_MODELS: ModelInfo[] = [
     outputPrice: '$0.79 / 1M',
   },
 ];
+
+export function getModelInfo(modelId?: string): ModelInfo | undefined {
+  if (!modelId) return undefined;
+  return SUPPORTED_MODELS.find(
+    (m) => m.id.toLowerCase() === modelId.toLowerCase()
+  );
+}
+
+export function getModelDisplayName(modelId?: string): {
+  name: string;
+  providerName: string;
+  badge: string;
+  id: string;
+} {
+  if (!modelId) {
+    return {
+      name: 'Nemotron 3.5 Bolt',
+      providerName: 'NVIDIA Nemotron',
+      badge: '⚡ NVIDIA Open Source',
+      id: 'nvidia/nemotron-3.5-bolt-e4b',
+    };
+  }
+
+  const match = getModelInfo(modelId);
+  if (match) {
+    return {
+      name: match.name,
+      providerName: match.providerName,
+      badge: match.badge,
+      id: match.id,
+    };
+  }
+
+  if (modelId.includes('nemotron') || modelId.startsWith('nvidia/')) {
+    return {
+      name: 'Nemotron 3.5 Bolt (NVIDIA)',
+      providerName: 'NVIDIA Nemotron',
+      badge: '⚡ Active · Free & Open-Source',
+      id: modelId,
+    };
+  }
+  if (modelId.includes('gemini')) {
+    return {
+      name: modelId,
+      providerName: 'Google Gemini',
+      badge: 'Google AI',
+      id: modelId,
+    };
+  }
+  if (modelId.includes('gpt') || modelId.startsWith('o1') || modelId.startsWith('o3')) {
+    return {
+      name: modelId,
+      providerName: 'OpenAI',
+      badge: 'OpenAI',
+      id: modelId,
+    };
+  }
+  if (modelId.includes('claude')) {
+    return {
+      name: modelId,
+      providerName: 'Anthropic',
+      badge: 'Anthropic',
+      id: modelId,
+    };
+  }
+  if (modelId.includes('deepseek')) {
+    return {
+      name: modelId,
+      providerName: 'DeepSeek',
+      badge: 'DeepSeek',
+      id: modelId,
+    };
+  }
+  if (modelId.includes('llama')) {
+    return {
+      name: modelId,
+      providerName: 'Meta / Groq',
+      badge: 'Meta',
+      id: modelId,
+    };
+  }
+
+  return {
+    name: modelId,
+    providerName: 'AI Engine',
+    badge: 'AI Model',
+    id: modelId,
+  };
+}

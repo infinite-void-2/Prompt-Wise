@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-24T14:30:37.082Z",
+  "timestamp": "2026-10-24T15:02:32.264Z",
   "model": "gemini-3.5-flash-lite",
   "instructionVersion": "v1.2.0",
   "mode": "offline_fixture",
@@ -24,10 +24,7 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [
-        "PROMPT_ALREADY_OPTIMIZED",
-        "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
-      ],
+      "warningsDetected": [],
       "tokenMetrics": {
         "rawTokens": 33,
         "highContextTokens": 44,
@@ -72,8 +69,7 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
-        "PROMPT_ALREADY_OPTIMIZED",
-        "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
+        "PROMPT_ALREADY_OPTIMIZED"
       ],
       "tokenMetrics": {
         "rawTokens": 21,
@@ -212,8 +208,8 @@
       "tokenMetrics": {
         "rawTokens": 4,
         "highContextTokens": 36,
-        "lowTokenTokens": 13,
-        "lowTokenReductionPercent": -225
+        "lowTokenTokens": 4,
+        "lowTokenReductionPercent": 0
       },
       "passed": true,
       "failureReasons": []
@@ -280,13 +276,14 @@
       "warningsDetected": [
         "PROMPT_ALREADY_OPTIMIZED",
         "PROMPT_INJECTION_DEFENSE_TRIGGERED",
-        "PROMPT_INJECTION_DEFENSE_TRIGGERED"
+        "PROMPT_INJECTION_DEFENSE_TRIGGERED",
+        "NO_SAFE_COMPRESSION"
       ],
       "tokenMetrics": {
         "rawTokens": 26,
         "highContextTokens": 48,
-        "lowTokenTokens": 30,
-        "lowTokenReductionPercent": -15.4
+        "lowTokenTokens": 26,
+        "lowTokenReductionPercent": 0
       },
       "passed": true,
       "failureReasons": []
@@ -394,7 +391,6 @@
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
       "warningsDetected": [
-        "PROMPT_ALREADY_OPTIMIZED",
         "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
       ],
       "tokenMetrics": {

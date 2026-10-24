@@ -1,6 +1,6 @@
 # OptiPrompt Golden Evaluation Report
 
-- **Timestamp**: 2026-10-24T14:30:37.082Z
+- **Timestamp**: 2026-10-24T15:02:32.264Z
 - **Evaluation Mode**: `offline_fixture`
 - **Target Model**: `gemini-3.5-flash-lite`
 - **Optimizer Instruction Version**: `v1.2.0`
@@ -26,10 +26,10 @@
 | `case-06` | Writing | Must-not-include constraint | 5/5 | PASS | 0% | PASSED |
 | `case-07` | Data Extraction | Exact schema and literal preservation | 5/5 | PASS | 22.2% | PASSED |
 | `case-08` | Coding | Code/path/command preservation | 5/5 | PASS | 30% | PASSED |
-| `case-09` | Other | Ambiguous request | 5/5 | PASS | -225% | PASSED |
+| `case-09` | Other | Ambiguous request | 5/5 | PASS | 0% | PASSED |
 | `case-10` | Reasoning | Contradictory requirements | 5/5 | PASS | 0% | PASSED |
 | `case-11` | Writing | Multilingual prompt (Marathi) | 5/5 | PASS | 30.4% | PASSED |
-| `case-12` | Summarization | Quoted prompt injection | 5/5 | PASS | -15.4% | PASSED |
+| `case-12` | Summarization | Quoted prompt injection | 5/5 | PASS | 0% | PASSED |
 | `case-13` | Data Extraction | Data extraction delimiters | 5/5 | PASS | 30.3% | PASSED |
 | `case-14` | Reasoning | Mathematical correctness constraints | 5/5 | PASS | 16% | PASSED |
 | `case-15` | Creative | Creative writing with boundaries | 5/5 | PASS | 0% | PASSED |

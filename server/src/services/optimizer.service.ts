@@ -160,6 +160,23 @@ export class OptimizerService {
 
     warnings.push(...tokenCounts.warnings);
 
+    // If the generated low-token variant actually increases tokens over the raw prompt,
+    // fallback lowToken to rawPrompt so low-token prompt never costs more than original prompt!
+    if (
+      tokenCounts.rawTokens !== null &&
+      tokenCounts.lowTokenTokens !== null &&
+      tokenCounts.lowTokenTokens > tokenCounts.rawTokens
+    ) {
+      output.lowToken = rawPrompt.trim();
+      tokenCounts.lowTokenTokens = tokenCounts.rawTokens;
+      if (!warnings.some((w) => w.code === 'NO_SAFE_COMPRESSION')) {
+        warnings.push({
+          code: 'NO_SAFE_COMPRESSION',
+          message: 'The original prompt is already minimal. Further compression would inflate tokens, so the original prompt is retained.',
+        });
+      }
+    }
+
     // Compute metrics with two-way cost prediction
     const metrics = this.tokenMetricsService.computeMetrics(
       tokenCounts,
@@ -278,14 +295,48 @@ export class OptimizerService {
       }
     }
 
-    // 2. Must-preserve requirements (case-insensitive substring/semantic check)
+    // 2. Must-preserve requirements (case-insensitive, normalized semantic check)
     const preserves = constraints.mustPreserve || [];
     const variantLower = variantText.toLowerCase();
+    const rawLower = rawPrompt.toLowerCase();
+
     for (const req of preserves) {
-      if (variantLower.includes(req.toLowerCase())) {
+      if (!req || req.trim() === '') continue;
+      const cleanReq = req.replace(/_/g, ' ').trim().toLowerCase();
+
+      // Case A: Direct substring match in variant
+      if (variantLower.includes(cleanReq) || variantLower.includes(req.toLowerCase())) {
         mustPreserveSatisfied.push(req);
-      } else {
+        continue;
+      }
+
+      // Case B: If cleanReq was an exact phrase in rawPrompt, it is a hard textual requirement
+      if (rawLower.includes(cleanReq)) {
         mustPreserveMissing.push(req);
+        continue;
+      }
+
+      // Case C: The requirement is an LLM-synthesized summary or tag (e.g., "generation_of_a_joke", "Python script generation")
+      const stopWords = new Set(['the', 'and', 'for', 'with', 'that', 'this', 'from', 'into', 'generation', 'requirement', 'output', 'user', 'logic']);
+      const contentWords = cleanReq.split(/\s+/).filter((w) => w.length > 2 && !stopWords.has(w));
+      const wordsInRaw = contentWords.filter((w) => rawLower.includes(w));
+
+      if (wordsInRaw.length > 0) {
+        // If content words that appeared in rawPrompt are retained in the variant, it is satisfied
+        const allPresent = wordsInRaw.every((w) => variantLower.includes(w));
+        if (allPresent) {
+          mustPreserveSatisfied.push(req);
+        } else {
+          mustPreserveMissing.push(req);
+        }
+      } else {
+        // Abstract tag with no direct token overlap with rawPrompt; check if any content word is in variant
+        const somePresent = contentWords.some((w) => variantLower.includes(w));
+        if (somePresent || contentWords.length === 0) {
+          mustPreserveSatisfied.push(req);
+        } else {
+          mustPreserveMissing.push(req);
+        }
       }
     }
 

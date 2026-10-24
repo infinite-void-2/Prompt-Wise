@@ -8,6 +8,7 @@ import { TokenComparisonBar } from './components/TokenComparisonBar.js';
 import { VariantColumn } from './components/VariantColumn.js';
 import { WarningsBanner } from './components/WarningsBanner.js';
 import { executePrompt, fetchHealth, optimizePrompt } from './lib/api.js';
+import { getModelDisplayName } from './lib/models.js';
 import {
   ExecutionResult,
   OptimizationResult,
@@ -331,14 +332,20 @@ export const App: React.FC = () => {
 
             {/* 3-Column Side-by-Side Comparison */}
             <div>
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                   <Shield className="w-4 h-4 text-emerald-400" />
                   <span>Side-by-Side Prompt Comparison</span>
                 </h3>
-                <span className="text-xs text-slate-500">
-                  Select a variant to edit or execute directly
-                </span>
+                <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-900/90 border border-slate-800 text-xs shadow-sm">
+                  <span className="text-slate-400">Optimization Engine:</span>
+                  <span className="font-semibold text-emerald-400 font-mono text-[11px]">
+                    {optimizationResult.model}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/30">
+                    {optimizationResult.targetProvider || 'NVIDIA Nemotron'}
+                  </span>
+                </div>
               </div>
 
               {isExecuting && (
@@ -346,7 +353,7 @@ export const App: React.FC = () => {
                   <div className="flex items-center space-x-2.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
                     <span className="text-xs font-medium">
-                      Executing <strong>{executedVariant === 'original' ? 'Original Prompt' : executedVariant === 'highContext' ? 'High-Context Variant' : 'Low-Token Variant'}</strong> with {health?.model || 'Gemini'}...
+                      Executing <strong>{executedVariant === 'original' ? 'Original Prompt' : executedVariant === 'highContext' ? 'High-Context Variant' : 'Low-Token Variant'}</strong> with <strong>{getModelDisplayName(selectedModel).name}</strong> (<span className="font-mono text-[11px]">{selectedModel}</span>)...
                     </span>
                   </div>
                   <button
@@ -401,6 +408,8 @@ export const App: React.FC = () => {
                   onStop={handleStopExecution}
                   isExecuting={isExecuting}
                   isCurrentExecuting={isExecuting && executedVariant === 'original'}
+                  generatingModel={optimizationResult.model}
+                  targetProvider={optimizationResult.targetProvider}
                   accentColor="slate"
                 />
 
@@ -421,6 +430,8 @@ export const App: React.FC = () => {
                   isExecuting={isExecuting}
                   isCurrentExecuting={isExecuting && executedVariant === 'highContext'}
                   verificationDetails={optimizationResult.verificationStatus?.highContext}
+                  generatingModel={optimizationResult.model}
+                  targetProvider={optimizationResult.targetProvider}
                   accentColor="sky"
                 />
 
@@ -441,6 +452,8 @@ export const App: React.FC = () => {
                   isExecuting={isExecuting}
                   isCurrentExecuting={isExecuting && executedVariant === 'lowToken'}
                   verificationDetails={optimizationResult.verificationStatus?.lowToken}
+                  generatingModel={optimizationResult.model}
+                  targetProvider={optimizationResult.targetProvider}
                   accentColor="emerald"
                 />
               </div>

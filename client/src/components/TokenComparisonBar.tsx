@@ -75,9 +75,16 @@ export const TokenComparisonBar: React.FC<TokenComparisonBarProps> = ({ metrics 
         <div>
           <div className="flex justify-between text-xs mb-1 font-medium">
             <span className="text-slate-400">Original Prompt</span>
-            <span className="font-mono text-slate-200">
-              {rawTokens !== null ? `${rawTokens.toLocaleString()} tokens` : 'Unavailable'}
-            </span>
+            <div className="flex items-center space-x-2">
+              {rawTokens !== null && (
+                <span className="font-mono text-slate-400 text-[11px]">
+                  ~${((rawTokens / 1_000_000) * 0.075).toFixed(6)}
+                </span>
+              )}
+              <span className="font-mono text-slate-200">
+                {rawTokens !== null ? `${rawTokens.toLocaleString()} tokens` : 'Unavailable'}
+              </span>
+            </div>
           </div>
           <div className="w-full bg-slate-900 rounded-full h-3 overflow-hidden p-0.5 border border-slate-800">
             <div
@@ -98,9 +105,16 @@ export const TokenComparisonBar: React.FC<TokenComparisonBarProps> = ({ metrics 
                 </span>
               )}
             </div>
-            <span className="font-mono text-sky-300">
-              {highContextTokens !== null ? `${highContextTokens.toLocaleString()} tokens` : 'Unavailable'}
-            </span>
+            <div className="flex items-center space-x-2">
+              {highContextTokens !== null && (
+                <span className="font-mono text-sky-400/70 text-[11px]">
+                  ~${((highContextTokens / 1_000_000) * 0.075).toFixed(6)}
+                </span>
+              )}
+              <span className="font-mono text-sky-300">
+                {highContextTokens !== null ? `${highContextTokens.toLocaleString()} tokens` : 'Unavailable'}
+              </span>
+            </div>
           </div>
           <div className="w-full bg-slate-900 rounded-full h-3 overflow-hidden p-0.5 border border-slate-800">
             <div
@@ -118,20 +132,31 @@ export const TokenComparisonBar: React.FC<TokenComparisonBarProps> = ({ metrics 
               {lowTokenReductionPercent !== null && (
                 <span
                   className={`px-1.5 py-0.2 rounded text-[10px] font-semibold ${
-                    lowTokenReductionPercent >= 0
+                    lowTokenReductionPercent > 0
                       ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : lowTokenReductionPercent === 0
+                      ? 'bg-slate-700/40 text-slate-300 border border-slate-600/30'
                       : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                   }`}
                 >
-                  {lowTokenReductionPercent >= 0
+                  {lowTokenReductionPercent > 0
                     ? `-${lowTokenReductionPercent}% tokens`
+                    : lowTokenReductionPercent === 0
+                    ? `0% delta (optimal)`
                     : `+${Math.abs(lowTokenReductionPercent)}% tokens`}
                 </span>
               )}
             </div>
-            <span className="font-mono text-emerald-300 font-semibold">
-              {lowTokenTokens !== null ? `${lowTokenTokens.toLocaleString()} tokens` : 'Unavailable'}
-            </span>
+            <div className="flex items-center space-x-2">
+              {lowTokenTokens !== null && (
+                <span className="font-mono text-emerald-400/80 text-[11px]">
+                  ~${((lowTokenTokens / 1_000_000) * 0.075).toFixed(6)}
+                </span>
+              )}
+              <span className="font-mono text-emerald-300 font-semibold">
+                {lowTokenTokens !== null ? `${lowTokenTokens.toLocaleString()} tokens` : 'Unavailable'}
+              </span>
+            </div>
           </div>
           <div className="w-full bg-slate-900 rounded-full h-3 overflow-hidden p-0.5 border border-slate-800">
             <div

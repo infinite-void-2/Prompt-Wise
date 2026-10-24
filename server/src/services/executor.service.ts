@@ -52,8 +52,9 @@ export class ExecutorService {
       }
 
       // If key is not yet configured, provide seamless execution preview via engine bridge
+      const bridgeModel = config.DEFAULT_MODEL || 'nvidia/nemotron-3.5-bolt-e4b';
       const bridgeExecution = await this.geminiService.generateContent({
-        model: 'gemini-3.5-flash-lite',
+        model: bridgeModel,
         contents: params.prompt,
         systemInstruction: `You are simulating response behavior for model "${rawModel}" (${providerName}). Generate the natural completion for the user prompt adhering to the highest standards of that model.`,
       });
