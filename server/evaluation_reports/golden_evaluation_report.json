@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-10-24T07:54:27.369Z",
-  "model": "gemini-2.5-flash",
+  "timestamp": "2026-10-24T12:21:54.534Z",
+  "model": "gemini-3.8-flash",
   "instructionVersion": "v1.2.0",
   "mode": "offline_fixture",
   "totalCases": 20,
@@ -24,7 +24,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
+      ],
       "tokenMetrics": {
         "rawTokens": 33,
         "highContextTokens": 44,
@@ -66,7 +68,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
+      ],
       "tokenMetrics": {
         "rawTokens": 21,
         "highContextTokens": 40,
@@ -239,7 +243,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
+      ],
       "tokenMetrics": {
         "rawTokens": 23,
         "highContextTokens": 33,
@@ -284,7 +290,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
+      ],
       "tokenMetrics": {
         "rawTokens": 33,
         "highContextTokens": 44,
@@ -368,7 +376,9 @@
       "unsupportedAdditionsCount": 0,
       "formatInvariantPassed": true,
       "literalInvariantsPassed": true,
-      "warningsDetected": [],
+      "warningsDetected": [
+        "VERIFICATION_GATE_REVERTED_RECOMMENDATION"
+      ],
       "tokenMetrics": {
         "rawTokens": 83,
         "highContextTokens": 34,

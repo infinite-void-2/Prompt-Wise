@@ -29,9 +29,30 @@ export interface Recommendation {
 
 export interface CostEstimate {
   inputCost: number | null;
+  estimatedOutputTokens?: number | null;
+  estimatedOutputCost?: number | null;
+  totalCostPerCall?: number | null;
+  costPer1kCalls?: number | null;
   currency: string;
   isEstimate: true;
   assumptions: string[];
+}
+
+export interface VerificationDetails {
+  passed: boolean;
+  mustPreserveSatisfied: string[];
+  mustPreserveMissing: string[];
+  exactLiteralsSatisfied: string[];
+  exactLiteralsMissing: string[];
+  negativeConstraintsViolated: string[];
+  fallbackApplied: boolean;
+}
+
+export interface StageTimings {
+  totalMs: number;
+  analysisAndGenerationMs: number;
+  tokenCountingMs: number;
+  verificationMs: number;
 }
 
 export interface Metrics {
@@ -56,6 +77,11 @@ export interface OptimizationResult {
   warnings: OptimizationWarning[];
   recommendation: Recommendation;
   metrics: Metrics;
+  verificationStatus?: {
+    highContext: VerificationDetails;
+    lowToken: VerificationDetails;
+  };
+  timings?: StageTimings;
 }
 
 export interface ExecutionUsage {

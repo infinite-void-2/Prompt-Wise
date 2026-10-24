@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AlertCircle, Sparkles, Zap, Shield } from 'lucide-react';
+import { AlertCircle, Sparkles, Zap, Shield, Square } from 'lucide-react';
 import { ConstraintBadges } from './components/ConstraintBadges.js';
 import { ExecutionOutputPanel } from './components/ExecutionOutputPanel.js';
 import { Header } from './components/Header.js';
@@ -56,6 +56,7 @@ export const App: React.FC = () => {
   const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
 
   const executionRef = useRef<HTMLDivElement>(null);
+  const executionAbortControllerRef = useRef<AbortController | null>(null);
 
   // Fetch health status on mount
   useEffect(() => {
@@ -132,15 +133,25 @@ export const App: React.FC = () => {
   ) => {
     if (!textToExecute.trim() || isExecuting) return;
 
+    if (executionAbortControllerRef.current) {
+      executionAbortControllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    executionAbortControllerRef.current = controller;
+
     setErrorMessage(null);
     setIsExecuting(true);
     setExecutedVariant(variantType);
 
     try {
-      const result = await executePrompt({
-        prompt: textToExecute,
-        variantType,
-      });
+      const result = await executePrompt(
+        {
+          prompt: textToExecute,
+          variantType,
+        },
+        controller.signal
+      );
 
       setExecutionResult(result);
 
@@ -149,12 +160,28 @@ export const App: React.FC = () => {
         executionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     } catch (err: any) {
-      setErrorMessage(
-        `Execution failed: ${err.message || 'The model encountered an error executing your prompt.'}`
-      );
+      if (err.name === 'AbortError' || controller.signal.aborted) {
+        setErrorMessage('Prompt execution was stopped.');
+      } else {
+        setErrorMessage(
+          `Execution failed: ${err.message || 'The model encountered an error executing your prompt.'}`
+        );
+      }
     } finally {
-      setIsExecuting(false);
+      if (executionAbortControllerRef.current === controller) {
+        setIsExecuting(false);
+        executionAbortControllerRef.current = null;
+      }
     }
+  };
+
+  const handleStopExecution = () => {
+    if (executionAbortControllerRef.current) {
+      executionAbortControllerRef.current.abort();
+      executionAbortControllerRef.current = null;
+    }
+    setIsExecuting(false);
+    setErrorMessage('Prompt execution was stopped.');
   };
 
   return (
@@ -265,6 +292,42 @@ export const App: React.FC = () => {
                 </span>
               </div>
 
+              {isExecuting && (
+                <div className="mb-4 flex items-center justify-between p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 shadow-lg">
+                  <div className="flex items-center space-x-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
+                    <span className="text-xs font-medium">
+                      Executing <strong>{executedVariant === 'original' ? 'Original Prompt' : executedVariant === 'highContext' ? 'High-Context Variant' : 'Low-Token Variant'}</strong> with {health?.model || 'Gemini'}...
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleStopExecution}
+                    id="global-stop-execution-btn"
+                    className="flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition-colors shadow-sm active:scale-[0.98]"
+                  >
+                    <Square className="w-3 h-3 fill-current" />
+                    <span>Stop Execution</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Stage Timings Telemetry */}
+              {optimizationResult.timings && (
+                <div className="flex flex-wrap items-center justify-between px-3.5 py-2 rounded-xl bg-slate-900/70 border border-slate-800 text-[11px] text-slate-400 mb-3">
+                  <span className="font-semibold text-slate-300 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                    Pipeline Latency: <span className="font-mono text-emerald-400 font-bold">{optimizationResult.timings.totalMs} ms</span>
+                  </span>
+                  <div className="flex items-center space-x-3 text-slate-400 font-mono text-[10px]">
+                    <span>Generation: <strong className="text-slate-300">{optimizationResult.timings.analysisAndGenerationMs}ms</strong></span>
+                    <span>•</span>
+                    <span>Tokens: <strong className="text-slate-300">{optimizationResult.timings.tokenCountingMs}ms</strong></span>
+                    <span>•</span>
+                    <span>Verification: <strong className="text-slate-300">{optimizationResult.timings.verificationMs}ms</strong></span>
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 {/* 1. Original Prompt Column */}
                 <VariantColumn
@@ -279,7 +342,9 @@ export const App: React.FC = () => {
                   deltaPercent={null}
                   isRecommended={optimizationResult.recommendation.variant === 'original'}
                   onExecute={() => handleExecute(originalText, 'original')}
+                  onStop={handleStopExecution}
                   isExecuting={isExecuting}
+                  isCurrentExecuting={isExecuting && executedVariant === 'original'}
                   accentColor="slate"
                 />
 
@@ -296,7 +361,10 @@ export const App: React.FC = () => {
                   deltaPercent={optimizationResult.metrics.highContextChangePercent}
                   isRecommended={optimizationResult.recommendation.variant === 'highContext'}
                   onExecute={() => handleExecute(highContextText, 'highContext')}
+                  onStop={handleStopExecution}
                   isExecuting={isExecuting}
+                  isCurrentExecuting={isExecuting && executedVariant === 'highContext'}
+                  verificationDetails={optimizationResult.verificationStatus?.highContext}
                   accentColor="sky"
                 />
 
@@ -313,7 +381,10 @@ export const App: React.FC = () => {
                   deltaPercent={optimizationResult.metrics.lowTokenReductionPercent}
                   isRecommended={optimizationResult.recommendation.variant === 'lowToken'}
                   onExecute={() => handleExecute(lowTokenText, 'lowToken')}
+                  onStop={handleStopExecution}
                   isExecuting={isExecuting}
+                  isCurrentExecuting={isExecuting && executedVariant === 'lowToken'}
+                  verificationDetails={optimizationResult.verificationStatus?.lowToken}
                   accentColor="emerald"
                 />
               </div>

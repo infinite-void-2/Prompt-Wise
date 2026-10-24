@@ -88,10 +88,22 @@ export class GeminiService implements IGeminiService {
           generationConfig.systemInstruction = params.systemInstruction;
         }
 
-        const response = await client.models.generateContent({
+        const timeoutMs = config.REQUEST_TIMEOUT_MS || 30000;
+        const generatePromise = client.models.generateContent({
           model: params.model,
           contents: params.contents,
           config: generationConfig,
+        });
+
+        let timer: NodeJS.Timeout | undefined;
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timer = setTimeout(() => {
+            reject(new GeminiProviderError(`Gemini request timed out after ${timeoutMs / 1000}s`, 504));
+          }, timeoutMs);
+        });
+
+        const response = await Promise.race([generatePromise, timeoutPromise]).finally(() => {
+          if (timer) clearTimeout(timer);
         });
 
         const text = response.text || '';
@@ -143,9 +155,21 @@ export class GeminiService implements IGeminiService {
     const client = this.getClient();
 
     try {
-      const response = await client.models.countTokens({
+      const timeoutMs = config.REQUEST_TIMEOUT_MS || 30000;
+      const countPromise = client.models.countTokens({
         model: params.model,
         contents: params.contents,
+      });
+
+      let timer: NodeJS.Timeout | undefined;
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new GeminiProviderError(`Gemini countTokens request timed out after ${timeoutMs / 1000}s`, 504));
+        }, timeoutMs);
+      });
+
+      const response = await Promise.race([countPromise, timeoutPromise]).finally(() => {
+        if (timer) clearTimeout(timer);
       });
 
       if (response && typeof response.totalTokens === 'number') {

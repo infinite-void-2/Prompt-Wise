@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Copy, Check, Play, RotateCcw, Sparkles, Edit3 } from 'lucide-react';
+import { Copy, Check, Play, RotateCcw, Sparkles, Edit3, Square, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { VerificationDetails } from '../types/index.js';
 
 interface VariantColumnProps {
   id: string;
@@ -13,7 +14,10 @@ interface VariantColumnProps {
   deltaPercent: number | null;
   isRecommended?: boolean;
   onExecute: () => void;
+  onStop?: () => void;
   isExecuting: boolean;
+  isCurrentExecuting?: boolean;
+  verificationDetails?: VerificationDetails;
   accentColor: 'slate' | 'sky' | 'emerald';
 }
 
@@ -28,7 +32,10 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
   deltaPercent,
   isRecommended = false,
   onExecute,
+  onStop,
   isExecuting,
+  isCurrentExecuting = false,
+  verificationDetails,
   accentColor,
 }) => {
   const [copied, setCopied] = useState(false);
@@ -99,6 +106,22 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
           </div>
         </div>
         <p className="text-[11px] text-slate-400 leading-tight">{subtitle}</p>
+
+        {verificationDetails && (
+          <div className="mt-2 flex items-center gap-1.5">
+            {verificationDetails.passed ? (
+              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-[10px] font-medium">
+                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                <span>Verified: Hard Invariants Intact</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/25 text-rose-400 text-[10px] font-medium">
+                <AlertTriangle className="w-3 h-3 text-rose-400" />
+                <span>Verification Gated (Missing Literals)</span>
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Editor & Content Area */}
@@ -156,21 +179,33 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
           )}
         </button>
 
-        <button
-          onClick={onExecute}
-          disabled={isExecuting || !currentText.trim()}
-          id={`execute-btn-${id}`}
-          className={`flex items-center space-x-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold shadow-md transition-all ${
-            isExecuting || !currentText.trim()
-              ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50'
-              : accentColor === 'emerald' || isRecommended
-              ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/30 active:scale-[0.98]'
-              : 'bg-slate-700 hover:bg-slate-600 text-white active:scale-[0.98]'
-          }`}
-        >
-          <Play className="w-3.5 h-3.5 fill-current" />
-          <span>{isExecuting ? 'Executing...' : 'Execute this prompt'}</span>
-        </button>
+        {isCurrentExecuting ? (
+          <button
+            onClick={onStop}
+            id={`stop-btn-${id}`}
+            className="flex items-center space-x-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold shadow-md bg-rose-600 hover:bg-rose-500 text-white animate-pulse transition-all active:scale-[0.98]"
+            title="Stop prompt execution"
+          >
+            <Square className="w-3.5 h-3.5 fill-current" />
+            <span>Stop Execution</span>
+          </button>
+        ) : (
+          <button
+            onClick={onExecute}
+            disabled={isExecuting || !currentText.trim()}
+            id={`execute-btn-${id}`}
+            className={`flex items-center space-x-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold shadow-md transition-all ${
+              isExecuting || !currentText.trim()
+                ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50'
+                : accentColor === 'emerald' || isRecommended
+                ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/30 active:scale-[0.98]'
+                : 'bg-slate-700 hover:bg-slate-600 text-white active:scale-[0.98]'
+            }`}
+          >
+            <Play className="w-3.5 h-3.5 fill-current" />
+            <span>{isExecuting ? 'Waiting...' : 'Execute this prompt'}</span>
+          </button>
+        )}
       </div>
     </div>
   );

@@ -55,12 +55,37 @@ export type Recommendation = z.infer<typeof RecommendationSchema>;
 
 export const CostEstimateSchema = z.object({
   inputCost: z.number().nullable(),
+  estimatedOutputTokens: z.number().nullable().optional(),
+  estimatedOutputCost: z.number().nullable().optional(),
+  totalCostPerCall: z.number().nullable().optional(),
+  costPer1kCalls: z.number().nullable().optional(),
   currency: z.string(),
   isEstimate: z.literal(true),
   assumptions: z.array(z.string()),
 });
 
 export type CostEstimate = z.infer<typeof CostEstimateSchema>;
+
+export const VerificationDetailsSchema = z.object({
+  passed: z.boolean(),
+  mustPreserveSatisfied: z.array(z.string()).default([]),
+  mustPreserveMissing: z.array(z.string()).default([]),
+  exactLiteralsSatisfied: z.array(z.string()).default([]),
+  exactLiteralsMissing: z.array(z.string()).default([]),
+  negativeConstraintsViolated: z.array(z.string()).default([]),
+  fallbackApplied: z.boolean().default(false),
+});
+
+export type VerificationDetails = z.infer<typeof VerificationDetailsSchema>;
+
+export const StageTimingsSchema = z.object({
+  totalMs: z.number(),
+  analysisAndGenerationMs: z.number(),
+  tokenCountingMs: z.number(),
+  verificationMs: z.number(),
+});
+
+export type StageTimings = z.infer<typeof StageTimingsSchema>;
 
 export const MetricsSchema = z.object({
   rawTokens: z.number().nullable(),
@@ -86,6 +111,13 @@ export const OptimizationResultSchema = z.object({
   warnings: z.array(OptimizationWarningSchema),
   recommendation: RecommendationSchema,
   metrics: MetricsSchema,
+  verificationStatus: z
+    .object({
+      highContext: VerificationDetailsSchema,
+      lowToken: VerificationDetailsSchema,
+    })
+    .optional(),
+  timings: StageTimingsSchema.optional(),
 });
 
 export type OptimizationResult = z.infer<typeof OptimizationResultSchema>;

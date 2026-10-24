@@ -14,7 +14,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "eval:golden": "tsx src/evaluation/run-eval.ts --golden",
-    "eval:live": "tsx src/evaluation/run-eval.ts --live"
+    "eval:live": "tsx src/evaluation/run-eval.ts --live",
+    "benchmark": "tsx tests/performance/benchmark.ts"
   },
   "dependencies": {
     "@google/genai": "^2.31.0",

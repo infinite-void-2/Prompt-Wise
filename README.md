@@ -221,12 +221,19 @@ The test suite runs **100% offline and deterministically** without requiring an 
 
 | Command | Description | Target |
 | :--- | :--- | :--- |
-| `npm run test` | Runs all server and client unit & integration tests | 36 / 36 Passing |
-| `npm run test:server` | Runs 28 server tests (Zod validation, token math, injection, privacy) | 28 / 28 Passing |
+| `npm run test` | Runs all server and client unit & integration tests | 46 / 46 Passing |
+| `npm run test:server` | Runs 38 server tests (validation, verification gates, token cache, timings) | 38 / 38 Passing |
 | `npm run test:client` | Runs 8 React Testing Library component tests | 8 / 8 Passing |
+| `npm run benchmark` | Measures p50/p95 latency and generates `tests/performance/results.json` | Baseline p50: 32.25ms |
 | `npm run eval:golden` | Evaluates 20 golden prompt cases against invariant gates offline | 20 / 20 Passing |
 | `npm run eval:live` | Opt-in live evaluation using real Gemini API (`RUN_LIVE_LLM_EVALS=true`) | Model Rubric |
 | `npm run build` | Compiles server TypeScript and creates optimized Vite bundle | Zero errors |
+
+### Engineering & Performance Deliverables
+* **System Audit**: [`docs/EXISTING_SYSTEM_AUDIT.md`](file:///e:/NexusEngine/docs/EXISTING_SYSTEM_AUDIT.md)
+* **Performance Benchmark Report**: [`docs/PERFORMANCE_REPORT.md`](file:///e:/NexusEngine/docs/PERFORMANCE_REPORT.md)
+* **Engineering Change Log**: [`docs/ENGINEERING_CHANGELOG.md`](file:///e:/NexusEngine/docs/ENGINEERING_CHANGELOG.md)
+* **Machine-Readable Benchmark Results**: [`tests/performance/results.json`](file:///e:/NexusEngine/tests/performance/results.json)
 
 ---
 

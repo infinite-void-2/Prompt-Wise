@@ -37,14 +37,34 @@ export const TokenComparisonBar: React.FC<TokenComparisonBarProps> = ({ metrics 
 
         {/* Estimated Cost Callout */}
         {costEstimate && (
-          <div className="flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs text-slate-300">
-            <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Est. Input Cost:</span>
-            <span className="font-mono text-emerald-400 font-semibold">
-              {costEstimate.inputCost !== null
-                ? `$${costEstimate.inputCost.toFixed(6)} ${costEstimate.currency}`
-                : 'N/A'}
-            </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center space-x-1.5 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/60 text-xs text-slate-300">
+              <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Input:</span>
+              <span className="font-mono text-emerald-400 font-semibold">
+                {costEstimate.inputCost !== null
+                  ? `$${costEstimate.inputCost.toFixed(6)}`
+                  : 'N/A'}
+              </span>
+            </div>
+
+            {costEstimate.estimatedOutputCost !== undefined && costEstimate.estimatedOutputCost !== null && (
+              <div className="flex items-center space-x-1.5 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/60 text-xs text-slate-300">
+                <span>Output (~{costEstimate.estimatedOutputTokens || 160} tok):</span>
+                <span className="font-mono text-sky-400 font-semibold">
+                  ${costEstimate.estimatedOutputCost.toFixed(6)}
+                </span>
+              </div>
+            )}
+
+            {costEstimate.costPer1kCalls !== undefined && costEstimate.costPer1kCalls !== null && (
+              <div className="flex items-center space-x-1.5 bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-500/30 text-xs text-emerald-300">
+                <span>Total/1k Calls:</span>
+                <span className="font-mono text-emerald-300 font-bold">
+                  ${costEstimate.costPer1kCalls.toFixed(4)}
+                </span>
+              </div>
+            )}
           </div>
         )}
       </div>

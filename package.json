@@ -17,7 +17,8 @@
     "test:client": "npm --workspace=client run test",
     "typecheck": "npm --workspace=server run typecheck && npm --workspace=client run typecheck",
     "eval:golden": "npm --workspace=server run eval:golden",
-    "eval:live": "npm --workspace=server run eval:live"
+    "eval:live": "npm --workspace=server run eval:live",
+    "benchmark": "npm --workspace=server run benchmark"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

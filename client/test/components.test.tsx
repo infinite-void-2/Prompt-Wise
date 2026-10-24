@@ -255,10 +255,13 @@ describe('Frontend Component Tests', () => {
     }
 
     await waitFor(() => {
-      expect(api.executePrompt).toHaveBeenCalledWith({
-        prompt: 'Write python function. USER EDITED',
-        variantType: 'lowToken',
-      });
+      expect(api.executePrompt).toHaveBeenCalledWith(
+        {
+          prompt: 'Write python function. USER EDITED',
+          variantType: 'lowToken',
+        },
+        expect.any(Object)
+      );
       expect(screen.getByText('def hello_world(): return "hello"')).toBeInTheDocument();
       expect(screen.getByText('320 ms')).toBeInTheDocument();
     });

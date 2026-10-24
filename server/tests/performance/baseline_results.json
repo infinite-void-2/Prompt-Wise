@@ -1,0 +1,150 @@
+{
+  "timestamp": "2026-10-24T11:53:30.187Z",
+  "environment": "win32 node-v22.21.0",
+  "mode": "offline_mock",
+  "model": "gemini-3.8-flash",
+  "totalCases": 6,
+  "iterationsPerCase": 5,
+  "summary": {
+    "overallP50Ms": 46.95,
+    "overallP95Ms": 52.59,
+    "overallAvgMs": 48.4,
+    "minMs": 43.96,
+    "maxMs": 91.75,
+    "totalRequests": 30
+  },
+  "cases": [
+    {
+      "caseId": "case-01-filler",
+      "name": "Simple Prompt with Filler",
+      "iterations": 5,
+      "durationsMs": [
+        46.47,
+        47.56,
+        47.67,
+        52.59,
+        91.75
+      ],
+      "p50Ms": 47.67,
+      "p95Ms": 91.75,
+      "minMs": 46.47,
+      "maxMs": 91.75,
+      "avgMs": 57.21,
+      "rawTokens": 44,
+      "highContextTokens": 91,
+      "lowTokenTokens": 77,
+      "tokenReductionPercent": -75,
+      "modelCallsPerRequest": 4
+    },
+    {
+      "caseId": "case-02-strict-json",
+      "name": "Strict JSON with Negative Constraints",
+      "iterations": 5,
+      "durationsMs": [
+        43.96,
+        46.26,
+        46.52,
+        47.51,
+        48.47
+      ],
+      "p50Ms": 46.52,
+      "p95Ms": 48.47,
+      "minMs": 43.96,
+      "maxMs": 48.47,
+      "avgMs": 46.54,
+      "rawTokens": 39,
+      "highContextTokens": 87,
+      "lowTokenTokens": 78,
+      "tokenReductionPercent": -100,
+      "modelCallsPerRequest": 4
+    },
+    {
+      "caseId": "case-03-code-literal",
+      "name": "Code, Regex & Path Literals",
+      "iterations": 5,
+      "durationsMs": [
+        46.31,
+        46.36,
+        46.78,
+        46.98,
+        47.61
+      ],
+      "p50Ms": 46.78,
+      "p95Ms": 47.61,
+      "minMs": 46.31,
+      "maxMs": 47.61,
+      "avgMs": 46.81,
+      "rawTokens": 23,
+      "highContextTokens": 70,
+      "lowTokenTokens": 61,
+      "tokenReductionPercent": -165.2,
+      "modelCallsPerRequest": 4
+    },
+    {
+      "caseId": "case-04-long-redundant",
+      "name": "Long Enterprise Redundant Context",
+      "iterations": 5,
+      "durationsMs": [
+        44.85,
+        46.04,
+        46.25,
+        46.95,
+        47.98
+      ],
+      "p50Ms": 46.25,
+      "p95Ms": 47.98,
+      "minMs": 44.85,
+      "maxMs": 47.98,
+      "avgMs": 46.41,
+      "rawTokens": 74,
+      "highContextTokens": 121,
+      "lowTokenTokens": 112,
+      "tokenReductionPercent": -51.4,
+      "modelCallsPerRequest": 4
+    },
+    {
+      "caseId": "case-05-already-lean",
+      "name": "Already Lean & Minimal",
+      "iterations": 5,
+      "durationsMs": [
+        45.1,
+        46.27,
+        46.67,
+        47.28,
+        47.79
+      ],
+      "p50Ms": 46.67,
+      "p95Ms": 47.79,
+      "minMs": 45.1,
+      "maxMs": 47.79,
+      "avgMs": 46.62,
+      "rawTokens": 14,
+      "highContextTokens": 61,
+      "lowTokenTokens": 52,
+      "tokenReductionPercent": -271.4,
+      "modelCallsPerRequest": 4
+    },
+    {
+      "caseId": "case-06-contradictory",
+      "name": "Contradictory Constraints",
+      "iterations": 5,
+      "durationsMs": [
+        45.8,
+        46.21,
+        47.01,
+        47.44,
+        47.66
+      ],
+      "p50Ms": 47.01,
+      "p95Ms": 47.66,
+      "minMs": 45.8,
+      "maxMs": 47.66,
+      "avgMs": 46.82,
+      "rawTokens": 21,
+      "highContextTokens": 68,
+      "lowTokenTokens": 59,
+      "tokenReductionPercent": -181,
+      "modelCallsPerRequest": 4
+    }
+  ]
+}

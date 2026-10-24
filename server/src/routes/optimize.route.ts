@@ -17,6 +17,13 @@ export function createOptimizeRouter(optimizerService: OptimizerService): Router
         requestId,
       });
 
+      if (result.timings) {
+        res.setHeader(
+          'Server-Timing',
+          `total;dur=${result.timings.totalMs}, gen;dur=${result.timings.analysisAndGenerationMs}, tok;dur=${result.timings.tokenCountingMs}, verif;dur=${result.timings.verificationMs}`
+        );
+      }
+
       res.json({
         success: true,
         data: result,

@@ -31,6 +31,7 @@ export interface AppConfig {
 }
 
 const DEFAULT_ALLOWED_MODELS = [
+  'gemini-3.8-flash',
   'gemini-2.5-flash',
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
@@ -43,7 +44,7 @@ export const config: AppConfig = {
   PORT: parseInt(process.env.PORT || '4000', 10),
   CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
   GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
-  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
   ALLOWED_MODELS: process.env.ALLOWED_MODELS
     ? process.env.ALLOWED_MODELS.split(',').map((m) => m.trim())
     : DEFAULT_ALLOWED_MODELS,
