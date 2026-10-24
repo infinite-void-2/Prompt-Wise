@@ -271,8 +271,8 @@ export const App: React.FC = () => {
         />
 
         {/* Main Scrollable Content Area */}
-        <main className="flex-1 overflow-y-auto pb-[400px] pt-6 px-4 md:px-10 flex justify-center z-10">
-          <div className="w-full max-w-[1200px] flex flex-col gap-6">
+        <main className="flex-1 overflow-y-auto w-full relative z-10 px-4 md:px-10 flex justify-center">
+          <div className="w-full max-w-[1200px] flex flex-col gap-6 pt-6">
             {/* Value Proposition Hero / Greeting */}
             <div className="text-left space-y-2 max-w-3xl pt-2">
               <h2 className="text-3xl sm:text-4xl font-normal tracking-tight text-[#1F1F1F] dark:text-white flex items-center gap-2">
@@ -504,11 +504,14 @@ export const App: React.FC = () => {
                 />
               </div>
             )}
+
+            {/* Scroll Spacer to clear the sticky footer */}
+            <div className="h-[450px] w-full flex-shrink-0" aria-hidden="true" />
           </div>
         </main>
 
-        {/* Sticky Bottom Gemini Chat Input Area */}
-        <div className="absolute bottom-0 w-full bg-gradient-to-t from-[#F0F4F9] via-[#F0F4F9] to-transparent dark:from-[#131314] dark:via-[#131314] pb-6 pt-10 px-4 flex justify-center z-50 pointer-events-none">
+        {/* Locked Footer to Viewport */}
+        <div className="fixed bottom-0 left-0 right-0 w-full z-50 bg-gradient-to-t from-[#F0F4F9] via-[#F0F4F9] to-transparent dark:from-[#131314] dark:via-[#131314] pt-20 pb-6 px-4 flex justify-center pointer-events-none">
           <div className="w-full max-w-[850px] pointer-events-auto">
             <section aria-label="Prompt Input">
               <PromptInputPanel
