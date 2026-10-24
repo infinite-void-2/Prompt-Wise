@@ -205,282 +205,327 @@ export const App: React.FC = () => {
     setErrorMessage('Prompt execution was stopped.');
   };
 
+  // Sidebar collapse state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col font-sans">
-      {/* Header */}
-      <Header
-        appName={appName}
-        onUpdateAppName={handleUpdateAppName}
-        health={health}
-        healthLoading={healthLoading}
-        selectedModel={selectedModel}
-        onSelectModel={handleSelectModel}
-      />
-
-      {/* Main Workspace Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Value Proposition Hero */}
-        <div className="text-center space-y-2 max-w-3xl mx-auto">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-1">
-            <Zap className="w-3.5 h-3.5" />
-            <span>Two-Phase Pipeline: Optimize & Compare, then Execute</span>
+    <div className="flex h-screen bg-[#F0F4F9] dark:bg-[#131314] text-[#1F1F1F] dark:text-[#E3E3E3] font-sans overflow-hidden">
+      {/* Left Sidebar (Collapsible Gemini navigation drawer) */}
+      <aside
+        className={`transition-all duration-300 ease-in-out shrink-0 ${
+          isSidebarOpen ? 'w-64' : 'w-16'
+        } hidden md:flex flex-col h-full bg-[#E9EEF6] dark:bg-[#1E1F20] border-r border-[#E0E2E0] dark:border-[#282A2C] py-4 px-3 justify-between z-30`}
+      >
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="p-2.5 rounded-full hover:bg-[#D3E3FD]/50 dark:hover:bg-[#282A2C] text-[#444746] dark:text-[#C4C7C5] transition-colors"
+              title={isSidebarOpen ? 'Collapse menu' : 'Expand menu'}
+              aria-label={isSidebarOpen ? 'Collapse menu' : 'Expand menu'}
+            >
+              <Zap className="w-5 h-5 text-[#1A73E8] dark:text-[#8AB4F8]" />
+            </button>
+            {isSidebarOpen && (
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#444746] dark:text-[#9AA0A6]">
+                OptiPrompt
+              </span>
+            )}
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Transform Raw Prompts into High-Precision & Token-Efficient Variants
-          </h2>
-          <p className="text-sm text-slate-400">
-            Compare native token counts before executing. Never sacrifice core constraints or literal identifiers for arbitrary compression.
-          </p>
+
+          {isSidebarOpen && (
+            <div className="space-y-3 pt-2 text-xs text-[#444746] dark:text-[#C4C7C5] animate-fadeIn">
+              <div className="p-3 bg-white dark:bg-[#131314] rounded-2xl border border-[#E0E2E0] dark:border-[#282A2C] shadow-sm space-y-1">
+                <span className="font-semibold text-[#1F1F1F] dark:text-[#E3E3E3] block">Engine Mode</span>
+                <p className="text-[11px] leading-relaxed text-[#444746] dark:text-[#9AA0A6]">
+                  Phase 1 optimizes & benchmarks token count. Phase 2 executes the approved prompt.
+                </p>
+              </div>
+
+              <div className="p-3 bg-white dark:bg-[#131314] rounded-2xl border border-[#E0E2E0] dark:border-[#282A2C] shadow-sm space-y-1">
+                <span className="font-semibold text-[#1F1F1F] dark:text-[#E3E3E3] block">Active Model</span>
+                <p className="font-mono text-[#1A73E8] dark:text-[#8AB4F8] text-[11px] truncate">
+                  {selectedModel}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Global Error Banner */}
-        {errorMessage && (
-          <div
-            id="error-banner"
-            className="flex items-start space-x-3 p-4 rounded-xl bg-red-950/50 border border-red-800 text-red-200 text-xs animate-shake"
-          >
-            <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-            <div className="space-y-0.5">
-              <span className="font-bold">Error</span>
-              <p>{errorMessage}</p>
+        {/* Sidebar bottom telemetry info */}
+        <div className="px-1 text-[11px] text-[#444746] dark:text-[#5F6368] overflow-hidden whitespace-nowrap">
+          {isSidebarOpen ? 'Gemini Native Tokenizer API' : '⚡'}
+        </div>
+      </aside>
+
+      {/* Main Column: Header + Scrollable Canvas + Floating Bottom Input */}
+      <div className="flex-1 flex flex-col h-screen relative min-w-0">
+        {/* Header */}
+        <Header
+          appName={appName}
+          onUpdateAppName={handleUpdateAppName}
+          health={health}
+          healthLoading={healthLoading}
+          selectedModel={selectedModel}
+          onSelectModel={handleSelectModel}
+        />
+
+        {/* Main Scrollable Content Area */}
+        <main className="flex-1 overflow-y-auto pb-48 pt-6 px-4 md:px-10 flex justify-center">
+          <div className="w-full max-w-[1200px] flex flex-col gap-6">
+            {/* Value Proposition Hero / Greeting */}
+            <div className="text-left space-y-2 max-w-3xl pt-2">
+              <h2 className="text-3xl sm:text-4xl font-normal tracking-tight text-[#1F1F1F] dark:text-white flex items-center gap-2">
+                <span className="bg-gradient-to-r from-[#1A73E8] via-[#8AB4F8] to-[#C58AF9] bg-clip-text text-transparent font-medium">
+                  Hello, Developer
+                </span>
+              </h2>
+              <p className="text-sm text-[#444746] dark:text-[#C4C7C5] leading-relaxed">
+                Transform raw prompts into high-context structures and token-efficient variants with native Gemini token measurement.
+              </p>
             </div>
-          </div>
-        )}
 
-        {/* Input Panel */}
-        <section aria-label="Prompt Input">
-          <PromptInputPanel
-            rawPrompt={rawPrompt}
-            onPromptChange={setRawPrompt}
-            category={category}
-            onCategoryChange={setCategory}
-            selectedModel={selectedModel}
-            onModelChange={handleSelectModel}
-            onOptimize={handleOptimize}
-            isOptimizing={isOptimizing}
-            progressStep={progressStep}
-          />
-        </section>
-
-        {/* Optimization Results Section */}
-        {optimizationResult && (
-          <section
-            id="optimization-results-section"
-            className="space-y-6 pt-4 animate-fadeIn"
-            aria-label="Comparison and Analytics"
-          >
-            {/* Already Optimized Notification Banner */}
-            {(optimizationResult.isAlreadyOptimized || optimizationResult.optimizationStatus === 'ALREADY_OPTIMIZED') && (
+            {/* Global Error Banner */}
+            {errorMessage && (
               <div
-                id="already-optimized-banner"
-                className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-teal-950/50 to-slate-900 border border-emerald-500/50 shadow-xl flex items-start space-x-3.5 animate-fadeIn"
+                id="error-banner"
+                className="flex items-start space-x-3 p-4 rounded-2xl bg-red-50 dark:bg-[#3B181A]/40 border border-red-200 dark:border-[#6B2529] text-red-700 dark:text-[#F28B82] text-xs animate-shake"
               >
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-500/40 flex-shrink-0">
-                  <Sparkles className="w-5 h-5 text-emerald-400" />
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <h4 className="text-sm font-bold text-white tracking-wide">
-                      Prompt is Already Optimized
-                    </h4>
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/40">
-                      Optimal Density & Structure
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    The submitted prompt is already concise, well-structured, and token-efficient. No unnecessary compression was required. You can execute the original prompt directly or explore the structured high-context variant below.
-                  </p>
+                <AlertCircle className="w-4 h-4 text-red-500 dark:text-[#F28B82] flex-shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <span className="font-bold">Error</span>
+                  <p>{errorMessage}</p>
                 </div>
               </div>
             )}
 
-            {/* Warnings (if any) */}
-            <WarningsBanner warnings={optimizationResult.warnings} />
-
-            {/* Recommendation Card */}
-            {optimizationResult.recommendation && (
-              <div className="glass-panel rounded-2xl p-4 border border-emerald-500/30 bg-emerald-950/20 flex items-start space-x-3 shadow-lg">
-                <Sparkles className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <div className="space-y-0.5 text-xs">
-                  <div className="flex items-center space-x-2">
-                    <span className="font-bold text-white uppercase tracking-wider text-[11px]">
-                      Engine Recommendation:
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold text-[11px]">
-                      {optimizationResult.recommendation.variant === 'highContext'
-                        ? 'High-Context Variant'
-                        : optimizationResult.recommendation.variant === 'lowToken'
-                        ? 'Low-Token Variant'
-                        : 'Original Prompt'}
-                    </span>
-                  </div>
-                  <p className="text-slate-300 leading-relaxed">
-                    {optimizationResult.recommendation.reason}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Token Analytics Bar */}
-            <TokenComparisonBar metrics={optimizationResult.metrics} />
-
-            {/* Detected Invariants and Constraints */}
-            <ConstraintBadges
-              constraints={optimizationResult.detectedConstraints}
-              intentSummary={optimizationResult.intentSummary}
-            />
-
-            {/* 3-Column Side-by-Side Comparison */}
-            <div>
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-emerald-400" />
-                  <span>Side-by-Side Prompt Comparison</span>
-                </h3>
-                <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-900/90 border border-slate-800 text-xs shadow-sm">
-                  <span className="text-slate-400">Optimization Engine:</span>
-                  <span className="font-semibold text-emerald-400 font-mono text-[11px]">
-                    {optimizationResult.model}
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/30">
-                    {optimizationResult.targetProvider || 'NVIDIA Nemotron'}
-                  </span>
-                </div>
-              </div>
-
-              {isExecuting && (
-                <div className="mb-4 flex items-center justify-between p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 shadow-lg">
-                  <div className="flex items-center space-x-2.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
-                    <span className="text-xs font-medium">
-                      Executing <strong>{executedVariant === 'original' ? 'Original Prompt' : executedVariant === 'highContext' ? 'High-Context Variant' : 'Low-Token Variant'}</strong> with <strong>{getModelDisplayName(selectedModel).name}</strong> (<span className="font-mono text-[11px]">{selectedModel}</span>)...
-                    </span>
-                  </div>
-                  <button
-                    onClick={handleStopExecution}
-                    id="global-stop-execution-btn"
-                    className="flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition-colors shadow-sm active:scale-[0.98]"
+            {/* Optimization Results Section */}
+            {optimizationResult && (
+              <section
+                id="optimization-results-section"
+                className="space-y-6 animate-fadeIn"
+                aria-label="Comparison and Analytics"
+              >
+                {/* Already Optimized Notification Banner */}
+                {(optimizationResult.isAlreadyOptimized || optimizationResult.optimizationStatus === 'ALREADY_OPTIMIZED') && (
+                  <div
+                    id="already-optimized-banner"
+                    className="p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-[#1E2E25] border border-emerald-200 dark:border-[#2E573D] shadow-sm flex items-start space-x-3.5"
                   >
-                    <Square className="w-3 h-3 fill-current" />
-                    <span>Stop Execution</span>
-                  </button>
-                </div>
-              )}
+                    <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-[#81C995] flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <h4 className="text-sm font-semibold text-[#1F1F1F] dark:text-white tracking-wide">
+                          Prompt is Already Optimized
+                        </h4>
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-[#81C995] text-[10px] font-bold uppercase tracking-wider">
+                          Optimal Density & Structure
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#444746] dark:text-[#C4C7C5] leading-relaxed">
+                        The submitted prompt is already concise, well-structured, and token-efficient. No unnecessary compression was required.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
-              {/* Stage Timings Telemetry */}
-              {optimizationResult.timings && (
-                <div className="flex flex-wrap items-center justify-between px-3.5 py-2 rounded-xl bg-slate-900/70 border border-slate-800 text-[11px] text-slate-400 mb-3">
-                  <span className="font-semibold text-slate-300 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    Pipeline Latency: <span className="font-mono text-emerald-400 font-bold">{optimizationResult.timings.totalMs} ms</span>
-                  </span>
-                  <div className="flex items-center space-x-3 text-slate-400 font-mono text-[10px]">
-                    <span>Generation: <strong className="text-slate-300">{optimizationResult.timings.analysisAndGenerationMs}ms</strong></span>
-                    <span>•</span>
-                    <span>Tokens: <strong className="text-slate-300">{optimizationResult.timings.tokenCountingMs}ms</strong></span>
-                    <span>•</span>
-                    <span>Verification: <strong className="text-slate-300">{optimizationResult.timings.verificationMs}ms</strong></span>
+                {/* Warnings (if any) */}
+                <WarningsBanner warnings={optimizationResult.warnings} />
+
+                {/* Recommendation Card */}
+                {optimizationResult.recommendation && (
+                  <div className="bg-white dark:bg-[#1E1F20] rounded-2xl p-4 border border-[#E0E2E0] dark:border-[#282A2C] shadow-sm flex items-start space-x-3">
+                    <Sparkles className="w-5 h-5 text-[#1A73E8] dark:text-[#8AB4F8] flex-shrink-0 mt-0.5" />
+                    <div className="space-y-0.5 text-xs">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold text-[#1F1F1F] dark:text-white uppercase tracking-wider text-[11px]">
+                          Engine Recommendation:
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-[#1A73E8]/20 text-[#1A73E8] dark:text-[#8AB4F8] font-semibold text-[11px]">
+                          {optimizationResult.recommendation.variant === 'highContext'
+                            ? 'High-Context Variant'
+                            : optimizationResult.recommendation.variant === 'lowToken'
+                            ? 'Low-Token Variant'
+                            : 'Original Prompt'}
+                        </span>
+                      </div>
+                      <p className="text-[#444746] dark:text-[#C4C7C5] leading-relaxed">
+                        {optimizationResult.recommendation.reason}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Token Analytics Bar */}
+                <TokenComparisonBar metrics={optimizationResult.metrics} />
+
+                {/* Detected Invariants and Constraints */}
+                <ConstraintBadges
+                  constraints={optimizationResult.detectedConstraints}
+                  intentSummary={optimizationResult.intentSummary}
+                />
+
+                {/* 3-Column Side-by-Side Comparison */}
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-[#444746] dark:text-[#9AA0A6] flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-[#1A73E8] dark:text-[#8AB4F8]" />
+                      <span>Side-by-Side Prompt Comparison</span>
+                    </h3>
+                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-[#1E1F20] border border-[#E0E2E0] dark:border-[#282A2C] text-xs shadow-sm">
+                      <span className="text-[#444746] dark:text-[#9AA0A6]">Model:</span>
+                      <span className="font-semibold text-[#1A73E8] dark:text-[#8AB4F8] font-mono text-[11px]">
+                        {optimizationResult.model}
+                      </span>
+                    </div>
+                  </div>
+
+                  {isExecuting && (
+                    <div className="mb-4 flex items-center justify-between p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 text-amber-800 dark:text-amber-200 shadow-sm">
+                      <div className="flex items-center space-x-2.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
+                        <span className="text-xs font-medium">
+                          Executing <strong>{executedVariant === 'original' ? 'Original Prompt' : executedVariant === 'highContext' ? 'High-Context Variant' : 'Low-Token Variant'}</strong> with <strong>{getModelDisplayName(selectedModel).name}</strong>...
+                        </span>
+                      </div>
+                      <button
+                        onClick={handleStopExecution}
+                        id="global-stop-execution-btn"
+                        className="flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition-colors shadow-sm active:scale-[0.98]"
+                      >
+                        <Square className="w-3 h-3 fill-current" />
+                        <span>Stop Execution</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Stage Timings Telemetry */}
+                  {optimizationResult.timings && (
+                    <div className="flex flex-wrap items-center justify-between px-3.5 py-2 rounded-2xl bg-white dark:bg-[#1E1F20] border border-[#E0E2E0] dark:border-[#282A2C] text-[11px] text-[#444746] dark:text-[#9AA0A6] mb-3">
+                      <span className="font-semibold text-[#1F1F1F] dark:text-[#E3E3E3] flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                        Latency: <span className="font-mono text-emerald-600 dark:text-[#81C995] font-bold">{optimizationResult.timings.totalMs} ms</span>
+                      </span>
+                      <div className="flex items-center space-x-3 text-[#444746] dark:text-[#9AA0A6] font-mono text-[10px]">
+                        <span>Gen: <strong className="text-[#1F1F1F] dark:text-[#E3E3E3]">{optimizationResult.timings.analysisAndGenerationMs}ms</strong></span>
+                        <span>•</span>
+                        <span>Tokens: <strong className="text-[#1F1F1F] dark:text-[#E3E3E3]">{optimizationResult.timings.tokenCountingMs}ms</strong></span>
+                        <span>•</span>
+                        <span>Verify: <strong className="text-[#1F1F1F] dark:text-[#E3E3E3]">{optimizationResult.timings.verificationMs}ms</strong></span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                    {/* 1. Original Prompt Column */}
+                    <VariantColumn
+                      id="original"
+                      title="Original Prompt"
+                      subtitle={
+                        optimizationResult.isAlreadyOptimized
+                          ? '✨ Optimal in structure & token density'
+                          : 'Raw prompt submitted by user'
+                      }
+                      variantType="original"
+                      initialText={optimizationResult.rawPrompt}
+                      currentText={originalText}
+                      onTextChange={setOriginalText}
+                      tokenCount={optimizationResult.metrics.rawTokens}
+                      deltaPercent={null}
+                      isRecommended={
+                        optimizationResult.recommendation.variant === 'original' ||
+                        Boolean(optimizationResult.isAlreadyOptimized)
+                      }
+                      onExecute={() => handleExecute(originalText, 'original')}
+                      onStop={handleStopExecution}
+                      isExecuting={isExecuting}
+                      isCurrentExecuting={isExecuting && executedVariant === 'original'}
+                      generatingModel={optimizationResult.model}
+                      targetProvider={optimizationResult.targetProvider}
+                      accentColor="slate"
+                    />
+
+                    {/* 2. High-Context Variant Column */}
+                    <VariantColumn
+                      id="high-context"
+                      title="High-Context Variant"
+                      subtitle="Added structure, role, constraints & output criteria"
+                      variantType="highContext"
+                      initialText={optimizationResult.highContext}
+                      currentText={highContextText}
+                      onTextChange={setHighContextText}
+                      tokenCount={optimizationResult.metrics.highContextTokens}
+                      deltaPercent={optimizationResult.metrics.highContextChangePercent}
+                      isRecommended={optimizationResult.recommendation.variant === 'highContext'}
+                      onExecute={() => handleExecute(highContextText, 'highContext')}
+                      onStop={handleStopExecution}
+                      isExecuting={isExecuting}
+                      isCurrentExecuting={isExecuting && executedVariant === 'highContext'}
+                      verificationDetails={optimizationResult.verificationStatus?.highContext}
+                      generatingModel={optimizationResult.model}
+                      targetProvider={optimizationResult.targetProvider}
+                      accentColor="sky"
+                    />
+
+                    {/* 3. Low-Token Variant Column */}
+                    <VariantColumn
+                      id="low-token"
+                      title="Low-Token Variant"
+                      subtitle="Lean imperative phrasing, 100% constraint preservation"
+                      variantType="lowToken"
+                      initialText={optimizationResult.lowToken}
+                      currentText={lowTokenText}
+                      onTextChange={setLowTokenText}
+                      tokenCount={optimizationResult.metrics.lowTokenTokens}
+                      deltaPercent={optimizationResult.metrics.lowTokenReductionPercent}
+                      isRecommended={optimizationResult.recommendation.variant === 'lowToken'}
+                      onExecute={() => handleExecute(lowTokenText, 'lowToken')}
+                      onStop={handleStopExecution}
+                      isExecuting={isExecuting}
+                      isCurrentExecuting={isExecuting && executedVariant === 'lowToken'}
+                      verificationDetails={optimizationResult.verificationStatus?.lowToken}
+                      generatingModel={optimizationResult.model}
+                      targetProvider={optimizationResult.targetProvider}
+                      accentColor="emerald"
+                    />
                   </div>
                 </div>
-              )}
+              </section>
+            )}
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                {/* 1. Original Prompt Column */}
-                <VariantColumn
-                  id="original"
-                  title="Original Prompt"
-                  subtitle={
-                    optimizationResult.isAlreadyOptimized
-                      ? '✨ Optimal in structure & token density'
-                      : 'Raw prompt submitted by user'
-                  }
-                  variantType="original"
-                  initialText={optimizationResult.rawPrompt}
-                  currentText={originalText}
-                  onTextChange={setOriginalText}
-                  tokenCount={optimizationResult.metrics.rawTokens}
-                  deltaPercent={null}
-                  isRecommended={
-                    optimizationResult.recommendation.variant === 'original' ||
-                    Boolean(optimizationResult.isAlreadyOptimized)
-                  }
-                  onExecute={() => handleExecute(originalText, 'original')}
-                  onStop={handleStopExecution}
-                  isExecuting={isExecuting}
-                  isCurrentExecuting={isExecuting && executedVariant === 'original'}
-                  generatingModel={optimizationResult.model}
-                  targetProvider={optimizationResult.targetProvider}
-                  accentColor="slate"
-                />
-
-                {/* 2. High-Context Variant Column */}
-                <VariantColumn
-                  id="high-context"
-                  title="High-Context Variant"
-                  subtitle="Added structure, role, constraints & output criteria"
-                  variantType="highContext"
-                  initialText={optimizationResult.highContext}
-                  currentText={highContextText}
-                  onTextChange={setHighContextText}
-                  tokenCount={optimizationResult.metrics.highContextTokens}
-                  deltaPercent={optimizationResult.metrics.highContextChangePercent}
-                  isRecommended={optimizationResult.recommendation.variant === 'highContext'}
-                  onExecute={() => handleExecute(highContextText, 'highContext')}
-                  onStop={handleStopExecution}
-                  isExecuting={isExecuting}
-                  isCurrentExecuting={isExecuting && executedVariant === 'highContext'}
-                  verificationDetails={optimizationResult.verificationStatus?.highContext}
-                  generatingModel={optimizationResult.model}
-                  targetProvider={optimizationResult.targetProvider}
-                  accentColor="sky"
-                />
-
-                {/* 3. Low-Token Variant Column */}
-                <VariantColumn
-                  id="low-token"
-                  title="Low-Token Variant"
-                  subtitle="Lean imperative phrasing, 100% constraint preservation"
-                  variantType="lowToken"
-                  initialText={optimizationResult.lowToken}
-                  currentText={lowTokenText}
-                  onTextChange={setLowTokenText}
-                  tokenCount={optimizationResult.metrics.lowTokenTokens}
-                  deltaPercent={optimizationResult.metrics.lowTokenReductionPercent}
-                  isRecommended={optimizationResult.recommendation.variant === 'lowToken'}
-                  onExecute={() => handleExecute(lowTokenText, 'lowToken')}
-                  onStop={handleStopExecution}
-                  isExecuting={isExecuting}
-                  isCurrentExecuting={isExecuting && executedVariant === 'lowToken'}
-                  verificationDetails={optimizationResult.verificationStatus?.lowToken}
-                  generatingModel={optimizationResult.model}
-                  targetProvider={optimizationResult.targetProvider}
-                  accentColor="emerald"
+            {/* Phase 2: Execution Result Panel */}
+            {executionResult && (
+              <div ref={executionRef} className="pt-2 animate-slideUp">
+                <ExecutionOutputPanel
+                  result={executionResult}
+                  variantType={executedVariant}
                 />
               </div>
-            </div>
-          </section>
-        )}
-
-        {/* Phase 2: Execution Result Panel */}
-        {executionResult && (
-          <div ref={executionRef} className="pt-4 animate-slideUp">
-            <ExecutionOutputPanel
-              result={executionResult}
-              variantType={executedVariant}
-            />
+            )}
           </div>
-        )}
-      </main>
+        </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950/80 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p>© 2026 {appName}. Built with Google Gemini API native token counting.</p>
-          <p className="text-[11px] text-slate-600">
-            Meaning preservation beats token reduction • Evidence over fake precision
-          </p>
+        {/* Sticky Bottom Gemini Chat Input Area */}
+        <div className="absolute bottom-0 w-full bg-gradient-to-t from-[#F0F4F9] via-[#F0F4F9] to-transparent dark:from-[#131314] dark:via-[#131314] pb-6 pt-10 px-4 flex justify-center z-20 pointer-events-none">
+          <div className="w-full max-w-[850px] pointer-events-auto">
+            <section aria-label="Prompt Input">
+              <PromptInputPanel
+                rawPrompt={rawPrompt}
+                onPromptChange={setRawPrompt}
+                category={category}
+                onCategoryChange={setCategory}
+                selectedModel={selectedModel}
+                onModelChange={handleSelectModel}
+                onOptimize={handleOptimize}
+                isOptimizing={isOptimizing}
+                progressStep={progressStep}
+              />
+            </section>
+          </div>
         </div>
-      </footer>
+      </div>
     </div>
   );
 };

@@ -52,20 +52,20 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-5 shadow-xl border border-slate-800">
-      {/* Top Toolbar: Category, Model & Example Prompts */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center space-x-2">
-            <label htmlFor="category-select" className="text-xs font-medium text-slate-400">
-              Task Category:
+    <div className="bg-[#FFFFFF] dark:bg-[#1E1F20] rounded-3xl p-4 sm:p-5 border border-[#E0E2E0] dark:border-[#282A2C] transition-all">
+      {/* Top Controls: Category, Target Model & Load Example */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 mb-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center space-x-1.5">
+            <label htmlFor="category-select" className="text-[11px] font-medium text-[#444746] dark:text-[#9AA0A6]">
+              Category:
             </label>
             <select
               id="category-select"
               value={category}
               onChange={(e) => onCategoryChange(e.target.value as TaskCategory)}
               disabled={isOptimizing}
-              className="bg-slate-800/90 text-slate-200 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
+              className="bg-[#F0F4F9] dark:bg-[#131314] text-[#1F1F1F] dark:text-[#E3E3E3] text-xs rounded-full px-3 py-1 border border-[#E0E2E0] dark:border-[#282A2C] focus:outline-none focus:ring-1 focus:ring-[#1A73E8] dark:focus:ring-[#8AB4F8] font-medium transition-colors"
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
@@ -75,16 +75,16 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
             </select>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <label htmlFor="model-select" className="text-xs font-medium text-slate-400">
-              Target Model:
+          <div className="flex items-center space-x-1.5">
+            <label htmlFor="model-select" className="text-[11px] font-medium text-[#444746] dark:text-[#9AA0A6]">
+              Model:
             </label>
             <select
               id="model-select"
               value={selectedModel}
               onChange={(e) => onModelChange(e.target.value)}
               disabled={isOptimizing}
-              className="bg-slate-800/90 text-emerald-400 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium font-mono"
+              className="bg-[#F0F4F9] dark:bg-[#131314] text-[#1A73E8] dark:text-[#8AB4F8] text-xs rounded-full px-3 py-1 border border-[#E0E2E0] dark:border-[#282A2C] focus:outline-none focus:ring-1 focus:ring-[#1A73E8] dark:focus:ring-[#8AB4F8] font-medium font-mono transition-colors"
             >
               <optgroup label="NVIDIA Nemotron (⚡ Active · Free & Open-Source)">
                 <option value="nvidia/nemotron-3.5-bolt-e4b">Nemotron 3.5 Bolt (⚡ Ultra-Fast / Default)</option>
@@ -117,20 +117,20 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <BookOpen className="w-3.5 h-3.5 text-slate-400" />
-          <label htmlFor="example-select" className="text-xs font-medium text-slate-400">
-            Load Example:
+        <div className="flex items-center space-x-1.5">
+          <BookOpen className="w-3.5 h-3.5 text-[#444746] dark:text-[#9AA0A6]" />
+          <label htmlFor="example-select" className="text-[11px] font-medium text-[#444746] dark:text-[#9AA0A6]">
+            Example:
           </label>
           <select
             id="example-select"
             defaultValue=""
             onChange={handleSelectExample}
             disabled={isOptimizing}
-            className="bg-slate-800/90 text-slate-200 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium max-w-[220px]"
+            className="bg-[#F0F4F9] dark:bg-[#131314] text-[#1F1F1F] dark:text-[#E3E3E3] text-xs rounded-full px-3 py-1 border border-[#E0E2E0] dark:border-[#282A2C] focus:outline-none focus:ring-1 focus:ring-[#1A73E8] dark:focus:ring-[#8AB4F8] font-medium max-w-[200px] transition-colors"
           >
             <option value="" disabled>
-              Select sample prompt...
+              Select prompt...
             </option>
             {EXAMPLE_PROMPTS.map((ex) => (
               <option key={ex.id} value={ex.id}>
@@ -141,26 +141,24 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
         </div>
       </div>
 
-      {/* Main Resizable Textarea */}
-      <div className="relative">
+      {/* Main Gemini-style prompt input capsule */}
+      <div className="relative rounded-2xl bg-[#F0F4F9] dark:bg-[#131314] border border-[#E0E2E0] dark:border-[#282A2C] focus-within:border-[#1A73E8] dark:focus-within:border-[#8AB4F8] transition-all p-3">
         <textarea
           id="raw-prompt-input"
           value={rawPrompt}
           onChange={(e) => onPromptChange(e.target.value)}
           placeholder="Paste or write your raw prompt here... (e.g. 'Extract name and age as valid JSON with keys name and age without markdown')"
-          rows={5}
+          rows={3}
           disabled={isOptimizing}
-          className={`w-full bg-slate-900/90 text-slate-100 rounded-xl p-4 text-sm font-sans focus:outline-none border transition-all resize-y ${
-            isTooLong
-              ? 'border-red-500 focus:ring-1 focus:ring-red-500'
-              : 'border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50'
+          className={`w-full bg-transparent text-[#1F1F1F] dark:text-[#E3E3E3] placeholder-[#747775] dark:placeholder-[#5F6368] text-sm font-sans focus:outline-none resize-y ${
+            isTooLong ? 'text-red-500 dark:text-red-400' : ''
           }`}
         />
 
         {rawPrompt && !isOptimizing && (
           <button
             onClick={() => onPromptChange('')}
-            className="absolute top-3 right-3 text-slate-500 hover:text-slate-300 p-1 rounded-md transition-colors"
+            className="absolute top-2.5 right-2.5 text-[#444746] dark:text-[#9AA0A6] hover:text-[#1F1F1F] dark:hover:text-[#E3E3E3] p-1.5 rounded-full hover:bg-[#E0E2E0] dark:hover:bg-[#282A2C] transition-colors"
             title="Clear prompt"
           >
             <Trash2 className="w-4 h-4" />
@@ -168,21 +166,21 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
         )}
       </div>
 
-      {/* Bottom Footer: Character Count & Optimize Button */}
-      <div className="flex flex-wrap items-center justify-between mt-3 gap-3">
-        <div className="flex items-center space-x-3 text-xs">
-          <span className={`${isTooLong ? 'text-red-400 font-bold' : 'text-slate-400'}`}>
+      {/* Bottom Footer: Character Count & Gemini Optimize Pill Button */}
+      <div className="flex flex-wrap items-center justify-between mt-3 gap-2">
+        <div className="flex items-center space-x-2 text-xs">
+          <span className={`${isTooLong ? 'text-red-500 font-bold' : 'text-[#444746] dark:text-[#9AA0A6]'}`}>
             {charCount.toLocaleString()} / {maxChars.toLocaleString()} characters
           </span>
           {isTooLong && (
-            <span className="text-red-400">Prompt exceeds maximum character limit.</span>
+            <span className="text-red-500 text-[11px]">Exceeds character limit.</span>
           )}
         </div>
 
-        <div className="flex items-center space-x-3">
-          {/* Real progress step state during work */}
+        <div className="flex items-center space-x-2.5">
+          {/* Progress step indicator */}
           {isOptimizing && progressStep && (
-            <div className="flex items-center space-x-2 text-xs text-emerald-400 font-medium bg-emerald-950/40 px-3 py-1.5 rounded-lg border border-emerald-800/40 animate-pulse">
+            <div className="flex items-center space-x-2 text-xs text-[#1A73E8] dark:text-[#8AB4F8] font-medium bg-blue-50 dark:bg-[#1E2838] px-3.5 py-1 rounded-full border border-blue-200 dark:border-[#2B3E5A] animate-pulse">
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
               <span>{progressStep}</span>
             </div>
@@ -192,10 +190,10 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
             id="optimize-prompt-btn"
             onClick={onOptimize}
             disabled={isEmpty || isTooLong || isOptimizing}
-            className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all shadow-lg ${
+            className={`flex items-center space-x-2 px-5 py-2 rounded-full font-medium text-xs sm:text-sm transition-all ${
               isEmpty || isTooLong || isOptimizing
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50'
-                : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-emerald-500/25 ring-1 ring-emerald-400/40 active:scale-[0.98]'
+                ? 'bg-[#E0E2E0] dark:bg-[#282A2C] text-[#747775] dark:text-[#5F6368] cursor-not-allowed'
+                : 'bg-[#1A73E8] hover:bg-[#1B66CA] dark:bg-gradient-to-r dark:from-[#1A73E8] dark:via-[#1B66CA] dark:to-[#8AB4F8] text-white active:scale-[0.98]'
             }`}
           >
             {isOptimizing ? (
@@ -205,9 +203,9 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4 text-emerald-200" />
+                <Sparkles className="w-4 h-4 text-white" />
                 <span>Optimize Prompt</span>
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
               </>
             )}
           </button>
