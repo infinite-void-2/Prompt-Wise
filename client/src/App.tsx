@@ -271,7 +271,7 @@ export const App: React.FC = () => {
         />
 
         {/* Main Scrollable Content Area */}
-        <main className="flex-1 overflow-y-auto pb-48 pt-6 px-4 md:px-10 flex justify-center">
+        <main className="flex-1 overflow-y-auto pb-[400px] pt-6 px-4 md:px-10 flex justify-center z-10">
           <div className="w-full max-w-[1200px] flex flex-col gap-6">
             {/* Value Proposition Hero / Greeting */}
             <div className="text-left space-y-2 max-w-3xl pt-2">
@@ -508,7 +508,7 @@ export const App: React.FC = () => {
         </main>
 
         {/* Sticky Bottom Gemini Chat Input Area */}
-        <div className="absolute bottom-0 w-full bg-gradient-to-t from-[#F0F4F9] via-[#F0F4F9] to-transparent dark:from-[#131314] dark:via-[#131314] pb-6 pt-10 px-4 flex justify-center z-20 pointer-events-none">
+        <div className="absolute bottom-0 w-full bg-gradient-to-t from-[#F0F4F9] via-[#F0F4F9] to-transparent dark:from-[#131314] dark:via-[#131314] pb-6 pt-10 px-4 flex justify-center z-50 pointer-events-none">
           <div className="w-full max-w-[850px] pointer-events-auto">
             <section aria-label="Prompt Input">
               <PromptInputPanel
