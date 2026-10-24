@@ -146,10 +146,10 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
 
       {/* Editor & Content Area */}
       <div className="p-4 flex-1 flex flex-col space-y-2">
-        <div className="flex justify-between items-center mb-2 text-xs text-slate-400">
+        <div className="flex justify-between items-center w-full mb-2 mt-1 text-xs">
           <div className="flex items-center space-x-1.5">
-            <Edit3 className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-[11px] font-medium">Prompt Text (Editable):</span>
+            <Edit3 className="w-3.5 h-3.5 text-gray-400" />
+            <span className="text-sm text-gray-400 font-medium">Prompt Text (Editable):</span>
             {isEdited && (
               <span className="px-1.5 py-0.2 rounded bg-amber-500/20 border border-amber-500/30 text-amber-300 text-[10px] font-bold">
                 Edited
@@ -161,7 +161,7 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
             {isEdited && (
               <button
                 onClick={handleReset}
-                className="flex items-center space-x-1 text-[11px] text-slate-400 hover:text-slate-200 transition-colors p-1 rounded hover:bg-slate-800"
+                className="flex items-center space-x-1 text-xs text-gray-400 hover:text-gray-200 transition-colors p-1 rounded hover:bg-slate-800"
                 title="Reset to generated variant"
               >
                 <RotateCcw className="w-3 h-3" />
@@ -180,12 +180,12 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
               {copied ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-400 text-[11px] font-medium">Copied!</span>
+                  <span className="text-emerald-400 text-xs font-medium">Copied!</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-[11px]">Copy</span>
+                  <Copy className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-xs">Copy</span>
                 </>
               )}
             </button>
@@ -197,7 +197,7 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
           value={currentText}
           onChange={(e) => onTextChange(e.target.value)}
           rows={8}
-          className="w-full flex-1 max-h-[400px] overflow-y-auto bg-slate-900/80 text-slate-200 rounded-xl p-3 text-xs font-mono leading-relaxed focus:outline-none border border-slate-800 focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 resize-y"
+          className="w-full flex-1 max-h-[350px] overflow-y-auto bg-slate-900/80 text-slate-200 rounded-xl p-3 text-xs font-mono leading-relaxed focus:outline-none border border-slate-800 focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 resize-y"
         />
       </div>
 
