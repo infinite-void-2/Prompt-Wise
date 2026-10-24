@@ -37,7 +37,7 @@ export function createApp(deps: AppDependencies = {}): Express {
   // CORS
   app.use(
     cors({
-      origin: [config.CLIENT_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173', 'https://promptwise.vercel.app'],
+      origin: [config.CLIENT_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173', 'https://prompt-wise-nu.vercel.app'],
       methods: ['GET', 'POST', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
       exposedHeaders: ['Server-Timing', 'X-Request-Id'],
