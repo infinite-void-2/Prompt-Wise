@@ -59,7 +59,7 @@ export class ExecutorService {
         systemInstruction: `You are simulating response behavior for model "${rawModel}" (${providerName}). Generate the natural completion for the user prompt adhering to the highest standards of that model.`,
       });
 
-      responseText = `${bridgeExecution.text}\n\n──────────────────────────────────────\n⚡ Multi-Model Preview (${rawModel} · ${providerName})\nℹ️ To route directly to ${providerName} production endpoints, add ${keyEnvVar}=your_key in server/.env`;
+      responseText = `${bridgeExecution.text}\n\n──────────────────────────────────────\n⚡ Multi-Model Preview (${rawModel} · ${providerName})\nℹ️ To route directly to ${providerName} production endpoints, configure ${keyEnvVar} in your environment variables (.env or Vercel settings)`;
       usage = bridgeExecution.usage
         ? {
             promptTokens: bridgeExecution.usage.promptTokens ?? null,

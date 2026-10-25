@@ -118,7 +118,8 @@ export async function optimizePromptStream(
     if (done) break;
 
     buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split('\n\n');
+    const normalized = buffer.replace(/\r\n/g, '\n');
+    const lines = normalized.split('\n\n');
     buffer = lines.pop() || '';
 
     for (const chunk of lines) {

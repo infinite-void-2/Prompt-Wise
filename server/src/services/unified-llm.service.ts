@@ -15,13 +15,21 @@ export class UnifiedLLMService implements IGeminiService {
   ) {}
 
   async generateContent(params: GenerateContentParams): Promise<GenerateContentResult> {
-    const isNemotronModel =
-      params.model.includes('nemotron') ||
-      params.model.startsWith('nvidia/') ||
-      params.model.includes('bolt');
+    const modelLower = (params.model || '').toLowerCase();
+    const isExplicitNemotron =
+      modelLower.includes('nemotron') ||
+      modelLower.startsWith('nvidia/') ||
+      modelLower.includes('bolt');
 
-    // If Nemotron is explicitly requested or NVIDIA_API_KEY is configured as default
-    if (isNemotronModel || (config.NVIDIA_API_KEY && config.DEFAULT_MODEL.includes('nemotron'))) {
+    const isExplicitGemini =
+      modelLower.startsWith('gemini');
+
+    // Route to Nemotron if explicitly requested, or if model is not Gemini and Nemotron is default
+    const shouldRouteNemotron =
+      isExplicitNemotron ||
+      (!isExplicitGemini && config.NVIDIA_API_KEY && config.DEFAULT_MODEL.includes('nemotron'));
+
+    if (shouldRouteNemotron) {
       try {
         return await this.nemotronService.generateContent(params);
       } catch (err: any) {
@@ -36,7 +44,7 @@ export class UnifiedLLMService implements IGeminiService {
       }
     }
 
-    // Otherwise, try Gemini with automatic fallback to Nemotron on quota/rate limit exhaustion
+    // Otherwise, route to Gemini with automatic fallback to Nemotron on quota/rate limit exhaustion
     try {
       return await this.geminiService.generateContent(params);
     } catch (err: any) {
@@ -60,12 +68,20 @@ export class UnifiedLLMService implements IGeminiService {
   }
 
   async countTokens(params: CountTokensParams): Promise<number> {
-    const isNemotronModel =
-      params.model.includes('nemotron') ||
-      params.model.startsWith('nvidia/') ||
-      params.model.includes('bolt');
+    const modelLower = (params.model || '').toLowerCase();
+    const isExplicitNemotron =
+      modelLower.includes('nemotron') ||
+      modelLower.startsWith('nvidia/') ||
+      modelLower.includes('bolt');
 
-    if (isNemotronModel || (config.NVIDIA_API_KEY && config.DEFAULT_MODEL.includes('nemotron'))) {
+    const isExplicitGemini =
+      modelLower.startsWith('gemini');
+
+    const shouldRouteNemotron =
+      isExplicitNemotron ||
+      (!isExplicitGemini && config.NVIDIA_API_KEY && config.DEFAULT_MODEL.includes('nemotron'));
+
+    if (shouldRouteNemotron) {
       return await this.nemotronService.countTokens(params);
     }
 
@@ -75,7 +91,7 @@ export class UnifiedLLMService implements IGeminiService {
       if (config.NVIDIA_API_KEY) {
         return await this.nemotronService.countTokens(params);
       }
-      return Math.max(1, Math.ceil(params.contents.trim().length / 3.8));
+      return Math.max(1, Math.ceil((params.contents || '').trim().length / 3.8));
     }
   }
 }

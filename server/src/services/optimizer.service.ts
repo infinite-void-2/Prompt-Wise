@@ -647,7 +647,23 @@ export class OptimizerService {
     const highContextTask = this.generateVariantBranch('highContext', model, promptMessage, rawPrompt, taskCategory);
     const lowTokenTask = this.generateVariantBranch('lowToken', model, promptMessage, rawPrompt, taskCategory);
 
-    const [highBranch, lowBranch] = await Promise.all([highContextTask, lowTokenTask]);
+    const results = await Promise.allSettled([highContextTask, lowTokenTask]);
+    const highResult = results[0];
+    const lowResult = results[1];
+
+    if (highResult.status === 'rejected' && lowResult.status === 'rejected') {
+      throw highResult.reason || lowResult.reason;
+    }
+
+    const highBranch: GeminiOptimizationOutput =
+      highResult.status === 'fulfilled'
+        ? highResult.value
+        : (lowResult as PromiseFulfilledResult<GeminiOptimizationOutput>).value;
+
+    const lowBranch: GeminiOptimizationOutput =
+      lowResult.status === 'fulfilled'
+        ? lowResult.value
+        : (highResult as PromiseFulfilledResult<GeminiOptimizationOutput>).value;
 
     let lowToken = lowBranch.lowToken;
     const hasChattyExamples = /(?:(?:Example|Sample|Case)\s*\d+|Input:\s*.+?\s*Output:)/i.test(rawPrompt);

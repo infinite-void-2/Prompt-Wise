@@ -162,6 +162,10 @@ export class GeminiService implements IGeminiService {
   }
 
   async countTokens(params: CountTokensParams): Promise<number> {
+    if (!params.contents || params.contents.trim() === '') {
+      return 0;
+    }
+
     const client = this.getClient();
 
     try {

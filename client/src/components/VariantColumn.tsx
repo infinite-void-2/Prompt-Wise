@@ -100,14 +100,28 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
             {deltaPercent !== null && (
               <span
                 className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${
-                  deltaPercent > 0
+                  variantType === 'highContext'
+                    ? deltaPercent >= 0
+                      ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+                      : 'bg-slate-800 text-slate-400'
+                    : deltaPercent > 0
                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                    : deltaPercent < 0
-                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                    : 'bg-slate-800 text-slate-400'
+                    : deltaPercent === 0
+                    ? 'bg-slate-800 text-slate-400'
+                    : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                 }`}
               >
-                {deltaPercent > 0 ? `-${deltaPercent}%` : deltaPercent === 0 ? '0%' : `+${Math.abs(deltaPercent)}%`}
+                {variantType === 'highContext'
+                  ? deltaPercent > 0
+                    ? `+${deltaPercent}%`
+                    : deltaPercent === 0
+                    ? '0%'
+                    : `-${Math.abs(deltaPercent)}%`
+                  : deltaPercent > 0
+                  ? `-${deltaPercent}%`
+                  : deltaPercent === 0
+                  ? '0%'
+                  : `+${Math.abs(deltaPercent)}%`}
               </span>
             )}
           </div>

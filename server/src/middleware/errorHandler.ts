@@ -9,12 +9,17 @@ import {
 
 function sanitizeMessage(msg: string): string {
   let clean = msg;
-  // Mask known server API key
+  // Mask known server API keys
   if (config.GEMINI_API_KEY) {
     clean = clean.split(config.GEMINI_API_KEY).join('[REDACTED_API_KEY]');
   }
+  if (config.NVIDIA_API_KEY) {
+    clean = clean.split(config.NVIDIA_API_KEY).join('[REDACTED_API_KEY]');
+  }
   // Mask Google API key patterns (AIzaSy...)
   clean = clean.replace(/AIzaSy[A-Za-z0-9_-]{33}/g, '[REDACTED_API_KEY]');
+  // Mask NVIDIA API key patterns (nvapi-...)
+  clean = clean.replace(/nvapi-[A-Za-z0-9_-]{30,}/g, '[REDACTED_API_KEY]');
   // Mask generic key or token query params / headers
   clean = clean.replace(/(key|token|auth)=[a-zA-Z0-9_\-\.]+/gi, '$1=[REDACTED]');
   return clean;
@@ -27,6 +32,8 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
   let message = 'An unexpected server error occurred.';
   let details: any = undefined;
 
+  const errMsg = String(err?.message || '');
+
   if (err instanceof ZodError) {
     statusCode = 400;
     code = 'VALIDATION_ERROR';
@@ -35,7 +42,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
       field: e.path.join('.'),
       message: sanitizeMessage(e.message),
     }));
-  } else if (err instanceof GeminiConfigError) {
+  } else if (err instanceof GeminiConfigError || errMsg.toLowerCase().includes('api key is not configured')) {
     statusCode = 503;
     code = 'CONFIG_ERROR';
     message = 'The AI service is not properly configured on the server. Please verify credentials.';

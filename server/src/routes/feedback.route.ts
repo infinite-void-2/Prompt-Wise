@@ -17,6 +17,9 @@ export function createFeedbackRouter(): Router {
       };
 
       feedbackStore.push(feedbackRecord);
+      if (feedbackStore.length > 500) {
+        feedbackStore.shift();
+      }
 
       res.json({
         success: true,
