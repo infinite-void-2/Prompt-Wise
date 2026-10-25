@@ -34,10 +34,29 @@ export function createApp(deps: AppDependencies = {}): Express {
   // Security & standard headers
   app.disable('x-powered-by');
 
-  // CORS
+  // CORS - Support comma-separated origins, local dev, and Vercel domains
+  const configuredOrigins = config.CLIENT_ORIGIN
+    ? config.CLIENT_ORIGIN.split(',').map((s) => s.trim())
+    : [];
+  const allowedOrigins = new Set([
+    ...configuredOrigins,
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+  ]);
+
   app.use(
     cors({
-      origin: [config.CLIENT_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (
+          allowedOrigins.has(origin) ||
+          origin.endsWith('.vercel.app') ||
+          process.env.NODE_ENV !== 'production'
+        ) {
+          return callback(null, true);
+        }
+        return callback(null, true);
+      },
       methods: ['GET', 'POST', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
       exposedHeaders: ['Server-Timing', 'X-Request-Id'],
@@ -53,14 +72,18 @@ export function createApp(deps: AppDependencies = {}): Express {
 
   // Rate Limiting (can be bypassed in unit tests if needed)
   if (deps.enableRateLimit !== false) {
-    app.use('/api', apiRateLimiter);
+    app.use(['/api', '/'], apiRateLimiter);
   }
 
-  // Mount API routes
-  app.use('/api', createHealthRouter());
-  app.use('/api', createOptimizeRouter(optimizer));
-  app.use('/api', createExecuteRouter(executor));
-  app.use('/api', createFeedbackRouter());
+  // Mount API routes (supports both /api and root mounts for serverless / custom proxies)
+  const apiRouter = express.Router();
+  apiRouter.use(createHealthRouter());
+  apiRouter.use(createOptimizeRouter(optimizer));
+  apiRouter.use(createExecuteRouter(executor));
+  apiRouter.use(createFeedbackRouter());
+
+  app.use('/api', apiRouter);
+  app.use(apiRouter);
 
   // Error handling middleware
   app.use(errorHandler);
