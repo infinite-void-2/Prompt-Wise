@@ -20,6 +20,9 @@
     "eval:live": "npm --workspace=server run eval:live",
     "benchmark": "npm --workspace=server run benchmark"
   },
+  "dependencies": {
+    "typescript": "^5.7.3"
+  },
   "devDependencies": {
     "concurrently": "^9.1.2"
   }
