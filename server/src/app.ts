@@ -34,10 +34,37 @@ export function createApp(deps: AppDependencies = {}): Express {
   // Security & standard headers
   app.disable('x-powered-by');
 
-  // CORS
+  // CORS with dynamic origin validation
+  const isAllowedOrigin = (origin?: string): boolean => {
+    if (!origin) return true; // Server-to-server, curl, or same-origin
+    if (origin === config.CLIENT_ORIGIN) return true;
+    if (
+      origin === 'http://localhost:5173' ||
+      origin === 'http://127.0.0.1:5173' ||
+      origin === 'http://localhost:3000' ||
+      origin === 'http://localhost:4000'
+    ) {
+      return true;
+    }
+    // Allow any Vercel deployment (production, preview branch, custom subdomains)
+    if (origin.endsWith('.vercel.app')) return true;
+
+    // Allow additional custom origins defined in environment variables
+    const additionalOrigins = process.env.ALLOWED_ORIGINS?.split(',').map((o) => o.trim()) || [];
+    if (additionalOrigins.includes(origin)) return true;
+
+    return false;
+  };
+
   app.use(
     cors({
-      origin: [config.CLIENT_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173', 'https://prompt-wise-nu.vercel.app'],
+      origin: (origin, callback) => {
+        if (isAllowedOrigin(origin)) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      },
       methods: ['GET', 'POST', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
       exposedHeaders: ['Server-Timing', 'X-Request-Id'],

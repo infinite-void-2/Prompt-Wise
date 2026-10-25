@@ -37,8 +37,10 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return json.data !== undefined ? json.data : json;
 }
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+
 export async function fetchHealth(signal?: AbortSignal): Promise<ServiceHealth> {
-  const res = await fetch('/api/health', { signal });
+  const res = await fetch(`${API_BASE}/api/health`, { signal });
   return handleResponse<ServiceHealth>(res);
 }
 
@@ -58,7 +60,7 @@ export async function optimizePrompt(
   },
   signal?: AbortSignal
 ): Promise<OptimizationResult> {
-  const res = await fetch('/api/optimize', {
+  const res = await fetch(`${API_BASE}/api/optimize`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(params),
@@ -78,7 +80,7 @@ export async function optimizePromptStream(
   onStage: (stage: StreamProgressStage) => void,
   signal?: AbortSignal
 ): Promise<OptimizationResult> {
-  const res = await fetch('/api/optimize', {
+  const res = await fetch(`${API_BASE}/api/optimize`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -167,7 +169,7 @@ export async function executePrompt(
   },
   signal?: AbortSignal
 ): Promise<ExecutionResult> {
-  const res = await fetch('/api/execute', {
+  const res = await fetch(`${API_BASE}/api/execute`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(params),
@@ -182,7 +184,7 @@ export async function submitFeedback(params: {
   rating: 'helpful' | 'not_helpful';
   reason?: string;
 }): Promise<{ success: boolean; message: string }> {
-  const res = await fetch('/api/feedback', {
+  const res = await fetch(`${API_BASE}/api/feedback`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(params),
