@@ -7,7 +7,7 @@ interface CostArbitrageTableProps {
   className?: string;
 }
 
-export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = ({
+export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(({
   arbitrageMetrics,
   className = '',
 }) => {
@@ -218,4 +218,6 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = ({
       </div>
     </div>
   );
-};
+});
+
+CostArbitrageTable.displayName = 'CostArbitrageTable';

@@ -14,7 +14,7 @@ interface HeaderProps {
   onSelectModel: (modelId: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({
+export const Header: React.FC<HeaderProps> = React.memo(({
   appName,
   onUpdateAppName,
   health,
@@ -166,4 +166,6 @@ export const Header: React.FC<HeaderProps> = ({
       />
     </>
   );
-};
+});
+
+Header.displayName = 'Header';

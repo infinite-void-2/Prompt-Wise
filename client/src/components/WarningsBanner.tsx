@@ -6,7 +6,7 @@ interface WarningsBannerProps {
   warnings: OptimizationWarning[];
 }
 
-export const WarningsBanner: React.FC<WarningsBannerProps> = ({ warnings }) => {
+export const WarningsBanner: React.FC<WarningsBannerProps> = React.memo(({ warnings }) => {
   if (!warnings || warnings.length === 0) return null;
 
   return (
@@ -45,6 +45,8 @@ export const WarningsBanner: React.FC<WarningsBannerProps> = ({ warnings }) => {
       })}
     </div>
   );
-};
+});
+
+WarningsBanner.displayName = 'WarningsBanner';
 
 export { WarningBanner } from './WarningBanner.js';

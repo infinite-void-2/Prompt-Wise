@@ -7,7 +7,7 @@ interface ConstraintBadgesProps {
   intentSummary?: string;
 }
 
-export const ConstraintBadges: React.FC<ConstraintBadgesProps> = ({
+export const ConstraintBadges: React.FC<ConstraintBadgesProps> = React.memo(({
   constraints,
   intentSummary,
 }) => {
@@ -102,4 +102,6 @@ export const ConstraintBadges: React.FC<ConstraintBadgesProps> = ({
       </div>
     </div>
   );
-};
+});
+
+ConstraintBadges.displayName = 'ConstraintBadges';

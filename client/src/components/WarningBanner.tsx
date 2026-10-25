@@ -6,7 +6,7 @@ interface WarningBannerProps {
   className?: string;
 }
 
-export const WarningBanner: React.FC<WarningBannerProps> = ({
+export const WarningBanner: React.FC<WarningBannerProps> = React.memo(({
   securityWarnings,
   className = '',
 }) => {
@@ -61,4 +61,6 @@ export const WarningBanner: React.FC<WarningBannerProps> = ({
       </div>
     </div>
   );
-};
+});
+
+WarningBanner.displayName = 'WarningBanner';

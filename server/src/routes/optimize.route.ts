@@ -26,6 +26,8 @@ export function createOptimizeRouter(optimizerService: OptimizerService): Router
           res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
         };
 
+        sendEvent('connected', { requestId, timestamp: Date.now() });
+
         try {
           const result = await optimizerService.optimize({
             rawPrompt: parsed.rawPrompt,

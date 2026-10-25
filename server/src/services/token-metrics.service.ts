@@ -39,6 +39,14 @@ export function resolveTokenizerFamily(model: string, explicitFamily?: Tokenizer
   return 'google-gemini';
 }
 
+function fastHash(str: string): number {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash) ^ str.charCodeAt(i);
+  }
+  return hash >>> 0;
+}
+
 export interface TokenCountResults {
   rawTokens: number | null;
   highContextTokens: number | null;
@@ -64,7 +72,8 @@ export class TokenMetricsService {
     if (!contents || contents.trim() === '') return 0;
 
     const family = resolveTokenizerFamily(model, tokenizerFamily);
-    const cacheKey = `${family}:${model}:${contents.length}:${contents}`;
+    const contentKey = contents.length > 64 ? `${contents.length}:${fastHash(contents)}` : contents;
+    const cacheKey = `${family}:${model}:${contentKey}`;
     if (this.tokenCache.has(cacheKey)) {
       return this.tokenCache.get(cacheKey)!;
     }

@@ -19,7 +19,7 @@ interface ExecutionOutputPanelProps {
   variantType: 'original' | 'highContext' | 'lowToken' | 'custom';
 }
 
-export const ExecutionOutputPanel: React.FC<ExecutionOutputPanelProps> = ({
+export const ExecutionOutputPanel: React.FC<ExecutionOutputPanelProps> = React.memo(({
   result,
   variantType,
 }) => {
@@ -41,11 +41,30 @@ export const ExecutionOutputPanel: React.FC<ExecutionOutputPanelProps> = ({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(result.response);
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        await navigator.clipboard.writeText(result.response);
+      } else {
+        throw new Error('Clipboard API unavailable');
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = result.response;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-999999px';
+        textarea.style.top = '-999999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        // Non-fatal copy error
+      }
     }
   };
 
@@ -236,4 +255,6 @@ export const ExecutionOutputPanel: React.FC<ExecutionOutputPanelProps> = ({
       </div>
     </div>
   );
-};
+});
+
+ExecutionOutputPanel.displayName = 'ExecutionOutputPanel';

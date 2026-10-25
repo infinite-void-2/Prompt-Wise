@@ -24,7 +24,7 @@ interface VariantColumnProps {
   targetProvider?: string;
 }
 
-export const VariantColumn: React.FC<VariantColumnProps> = ({
+export const VariantColumn: React.FC<VariantColumnProps> = React.memo(({
   id,
   title,
   subtitle,
@@ -50,11 +50,30 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(currentText);
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        await navigator.clipboard.writeText(currentText);
+      } else {
+        throw new Error('Clipboard API unavailable');
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = currentText;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-999999px';
+        textarea.style.top = '-999999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        // Non-fatal copy error
+      }
     }
   };
 
@@ -247,4 +266,6 @@ export const VariantColumn: React.FC<VariantColumnProps> = ({
       </div>
     </div>
   );
-};
+});
+
+VariantColumn.displayName = 'VariantColumn';

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { AlertCircle, Sparkles, Zap, Shield, Square } from 'lucide-react';
 import { ConstraintBadges } from './components/ConstraintBadges.js';
 import { ExecutionOutputPanel } from './components/ExecutionOutputPanel.js';
@@ -26,10 +26,10 @@ export const App: React.FC = () => {
     return saved;
   });
 
-  const handleUpdateAppName = (name: string) => {
+  const handleUpdateAppName = useCallback((name: string) => {
     setAppName(name);
     localStorage.setItem('promptwise_app_name', name);
-  };
+  }, []);
 
   // Service Health
   const [health, setHealth] = useState<ServiceHealth | null>(null);
@@ -40,10 +40,10 @@ export const App: React.FC = () => {
     return localStorage.getItem('optiprompt_selected_model') || 'nvidia/nemotron-3.5-bolt-e4b';
   });
 
-  const handleSelectModel = (modelId: string) => {
+  const handleSelectModel = useCallback((modelId: string) => {
     setSelectedModel(modelId);
     localStorage.setItem('optiprompt_selected_model', modelId);
-  };
+  }, []);
 
   // Prompt input state
   const [rawPrompt, setRawPrompt] = useState('');
@@ -154,63 +154,78 @@ export const App: React.FC = () => {
   };
 
   // Phase 2: Execute Selected Variant
-  const handleExecute = async (
-    textToExecute: string,
-    variantType: 'original' | 'highContext' | 'lowToken'
-  ) => {
-    if (!textToExecute.trim() || isExecuting) return;
+  const handleExecute = useCallback(
+    async (
+      textToExecute: string,
+      variantType: 'original' | 'highContext' | 'lowToken'
+    ) => {
+      if (!textToExecute.trim() || isExecuting) return;
 
-    if (executionAbortControllerRef.current) {
-      executionAbortControllerRef.current.abort();
-    }
+      if (executionAbortControllerRef.current) {
+        executionAbortControllerRef.current.abort();
+      }
 
-    const controller = new AbortController();
-    executionAbortControllerRef.current = controller;
+      const controller = new AbortController();
+      executionAbortControllerRef.current = controller;
 
-    setErrorMessage(null);
-    setIsExecuting(true);
-    setExecutedVariant(variantType);
+      setErrorMessage(null);
+      setIsExecuting(true);
+      setExecutedVariant(variantType);
 
-    try {
-      const result = await executePrompt(
-        {
-          prompt: textToExecute,
-          variantType,
-          model: selectedModel,
-        },
-        controller.signal
-      );
-
-      setExecutionResult(result);
-
-      // Smooth scroll to execution results
-      setTimeout(() => {
-        executionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    } catch (err: any) {
-      if (err.name === 'AbortError' || controller.signal.aborted) {
-        setErrorMessage('Prompt execution was stopped.');
-      } else {
-        setErrorMessage(
-          `Execution failed: ${err.message || 'The model encountered an error executing your prompt.'}`
+      try {
+        const result = await executePrompt(
+          {
+            prompt: textToExecute,
+            variantType,
+            model: selectedModel,
+          },
+          controller.signal
         );
-      }
-    } finally {
-      if (executionAbortControllerRef.current === controller) {
-        setIsExecuting(false);
-        executionAbortControllerRef.current = null;
-      }
-    }
-  };
 
-  const handleStopExecution = () => {
+        setExecutionResult(result);
+
+        // Smooth scroll to execution results
+        setTimeout(() => {
+          executionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } catch (err: any) {
+        if (err.name === 'AbortError' || controller.signal.aborted) {
+          setErrorMessage('Prompt execution was stopped.');
+        } else {
+          setErrorMessage(
+            `Execution failed: ${err.message || 'The model encountered an error executing your prompt.'}`
+          );
+        }
+      } finally {
+        if (executionAbortControllerRef.current === controller) {
+          setIsExecuting(false);
+          executionAbortControllerRef.current = null;
+        }
+      }
+    },
+    [isExecuting, selectedModel]
+  );
+
+  const handleStopExecution = useCallback(() => {
     if (executionAbortControllerRef.current) {
       executionAbortControllerRef.current.abort();
       executionAbortControllerRef.current = null;
     }
     setIsExecuting(false);
     setErrorMessage('Prompt execution was stopped.');
-  };
+  }, []);
+
+  const handleExecuteOriginal = useCallback(() => {
+    handleExecute(originalText, 'original');
+  }, [handleExecute, originalText]);
+
+  const handleExecuteHighContext = useCallback(() => {
+    handleExecute(highContextText, 'highContext');
+  }, [handleExecute, highContextText]);
+
+  const handleExecuteLowToken = useCallback(() => {
+    handleExecute(lowTokenText, 'lowToken');
+  }, [handleExecute, lowTokenText]);
 
   // Sidebar collapse state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -450,7 +465,7 @@ export const App: React.FC = () => {
                         optimizationResult.recommendation.variant === 'original' ||
                         Boolean(optimizationResult.isAlreadyOptimized)
                       }
-                      onExecute={() => handleExecute(originalText, 'original')}
+                      onExecute={handleExecuteOriginal}
                       onStop={handleStopExecution}
                       isExecuting={isExecuting}
                       isCurrentExecuting={isExecuting && executedVariant === 'original'}
@@ -471,7 +486,7 @@ export const App: React.FC = () => {
                       tokenCount={optimizationResult.metrics.highContextTokens}
                       deltaPercent={optimizationResult.metrics.highContextChangePercent}
                       isRecommended={optimizationResult.recommendation.variant === 'highContext'}
-                      onExecute={() => handleExecute(highContextText, 'highContext')}
+                      onExecute={handleExecuteHighContext}
                       onStop={handleStopExecution}
                       isExecuting={isExecuting}
                       isCurrentExecuting={isExecuting && executedVariant === 'highContext'}
@@ -493,7 +508,7 @@ export const App: React.FC = () => {
                       tokenCount={optimizationResult.metrics.lowTokenTokens}
                       deltaPercent={optimizationResult.metrics.lowTokenReductionPercent}
                       isRecommended={optimizationResult.recommendation.variant === 'lowToken'}
-                      onExecute={() => handleExecute(lowTokenText, 'lowToken')}
+                      onExecute={handleExecuteLowToken}
                       onStop={handleStopExecution}
                       isExecuting={isExecuting}
                       isCurrentExecuting={isExecuting && executedVariant === 'lowToken'}

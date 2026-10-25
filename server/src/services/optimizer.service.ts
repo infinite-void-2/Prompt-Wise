@@ -21,6 +21,22 @@ import {
 } from './prompt-templates.js';
 import { TokenMetricsService } from './token-metrics.service.js';
 
+// Precompiled Regexes to avoid repeated compilation and object allocation overhead
+const REGEX_LITERAL_REGEX = /\/[^\/\s]+\/[gimsuy]*/g;
+const FILE_PATH_REGEX = /[\w\-./\\]+\.[a-zA-Z]{2,4}\b/g;
+const QUOTED_LITERAL_REGEX = /["']([^"'\n\r]+)["']/g;
+const SNAKE_IDENTIFIER_REGEX = /\b[a-z0-9]+_[a-z0-9_]+\b/g;
+const LENGTH_CONSTRAINT_REGEX = /\b(under|less than|max|exactly|within)?\s*\d+\s*(words?|chars?|characters?|sentences?|lines?)\b/gi;
+const PROHIBITION_REGEX = /\b(do not|don't|no|never|without)\s+[\w\s]{3,35}(?=[,.;]|$)/gi;
+const INJECTION_PATTERNS = [
+  /ignore\s+(all\s+)?(previous|prior|above)\s+instructions/i,
+  /reveal\s+(the\s+)?(system\s+prompt|api\s*key|developer\s+mode)/i,
+  /you\s+are\s+now\s+in\s+dan\s+mode/i,
+  /disregard\s+(the\s+)?rules/i,
+  /output\s+the\s+initial\s+prompt/i,
+  /system\s+override/i,
+];
+
 export class OptimizerService {
   private tokenMetricsService: TokenMetricsService;
 
@@ -331,13 +347,13 @@ export class OptimizerService {
     const mustAvoid: Set<string> = new Set();
 
     // 1. Regex patterns (e.g. /^AIza[0-9]{10}$/ or /^[A-Z]{2}-\d{4}$/)
-    const regexMatches = rawPrompt.match(/\/[^\/\s]+\/[gimsuy]*/g);
+    const regexMatches = rawPrompt.match(REGEX_LITERAL_REGEX);
     if (regexMatches) {
       regexMatches.forEach((r) => exactLiterals.add(r));
     }
 
     // 2. File paths and extensions (e.g. src/server/index.ts, .env, index.html)
-    const filePathMatches = rawPrompt.match(/[\w\-./\\]+\.[a-zA-Z]{2,4}\b/g);
+    const filePathMatches = rawPrompt.match(FILE_PATH_REGEX);
     if (filePathMatches) {
       filePathMatches.forEach((p) => {
         if (!p.includes('..') && p.length > 3) exactLiterals.add(p);
@@ -345,7 +361,7 @@ export class OptimizerService {
     }
 
     // 3. Quoted literals (e.g. "name", 'age', "created_at")
-    const quotedMatches = rawPrompt.match(/["']([^"'\n\r]+)["']/g);
+    const quotedMatches = rawPrompt.match(QUOTED_LITERAL_REGEX);
     if (quotedMatches) {
       quotedMatches.forEach((q) => {
         const clean = q.slice(1, -1).trim();
@@ -354,23 +370,19 @@ export class OptimizerService {
     }
 
     // 4. Schema keys / snake_case identifiers (e.g. user_id, auth_token)
-    const snakeMatches = rawPrompt.match(/\b[a-z0-9]+_[a-z0-9_]+\b/g);
+    const snakeMatches = rawPrompt.match(SNAKE_IDENTIFIER_REGEX);
     if (snakeMatches) {
       snakeMatches.forEach((k) => exactLiterals.add(k));
     }
 
     // 5. Length constraints (e.g., "under 80 words", "10 words", "50 characters")
-    const lengthMatches = rawPrompt.match(
-      /\b(under|less than|max|exactly|within)?\s*\d+\s*(words?|chars?|characters?|sentences?|lines?)\b/gi
-    );
+    const lengthMatches = rawPrompt.match(LENGTH_CONSTRAINT_REGEX);
     if (lengthMatches) {
       lengthMatches.forEach((l) => hardKeywords.add(l.trim()));
     }
 
     // 6. Prohibitions and negative constraints (e.g., "no markdown", "do not use external libraries")
-    const prohibitionMatches = rawPrompt.match(
-      /\b(do not|don't|no|never|without)\s+[\w\s]{3,35}(?=[,.;]|$)/gi
-    );
+    const prohibitionMatches = rawPrompt.match(PROHIBITION_REGEX);
     if (prohibitionMatches) {
       prohibitionMatches.forEach((p) => mustAvoid.add(p.trim()));
     }
@@ -623,15 +635,7 @@ export class OptimizerService {
   }
 
   private detectPromptInjection(prompt: string): boolean {
-    const patterns = [
-      /ignore\s+(all\s+)?(previous|prior|above)\s+instructions/i,
-      /reveal\s+(the\s+)?(system\s+prompt|api\s*key|developer\s+mode)/i,
-      /you\s+are\s+now\s+in\s+dan\s+mode/i,
-      /disregard\s+(the\s+)?rules/i,
-      /output\s+the\s+initial\s+prompt/i,
-      /system\s+override/i,
-    ];
-    return patterns.some((pattern) => pattern.test(prompt));
+    return INJECTION_PATTERNS.some((pattern) => pattern.test(prompt));
   }
 
   /**

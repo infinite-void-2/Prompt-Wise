@@ -6,7 +6,7 @@ interface TokenComparisonBarProps {
   metrics: Metrics;
 }
 
-export const TokenComparisonBar: React.FC<TokenComparisonBarProps> = ({ metrics }) => {
+export const TokenComparisonBar: React.FC<TokenComparisonBarProps> = React.memo(({ metrics }) => {
   const {
     rawTokens,
     highContextTokens,
@@ -183,4 +183,6 @@ export const TokenComparisonBar: React.FC<TokenComparisonBarProps> = ({ metrics 
       )}
     </div>
   );
-};
+});
+
+TokenComparisonBar.displayName = 'TokenComparisonBar';
