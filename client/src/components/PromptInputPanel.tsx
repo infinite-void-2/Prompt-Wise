@@ -148,6 +148,7 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
           value={rawPrompt}
           onChange={(e) => onPromptChange(e.target.value)}
           placeholder="Paste or write your raw prompt here... (e.g. 'Extract name and age as valid JSON with keys name and age without markdown')"
+          aria-label="Raw prompt text to optimize"
           rows={3}
           disabled={isOptimizing}
           className={`w-full bg-transparent text-[#1F1F1F] dark:text-[#E3E3E3] placeholder-[#747775] dark:placeholder-[#5F6368] text-sm font-sans focus:outline-none resize-y ${
@@ -157,9 +158,11 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
 
         {rawPrompt && !isOptimizing && (
           <button
+            type="button"
             onClick={() => onPromptChange('')}
-            className="absolute top-2.5 right-2.5 text-[#444746] dark:text-[#9AA0A6] hover:text-[#1F1F1F] dark:hover:text-[#E3E3E3] p-1.5 rounded-full hover:bg-[#E0E2E0] dark:hover:bg-[#282A2C] transition-colors"
+            className="absolute top-2.5 right-2.5 text-[#444746] dark:text-[#9AA0A6] hover:text-[#1F1F1F] dark:hover:text-[#E3E3E3] p-1.5 rounded-full hover:bg-[#E0E2E0] dark:hover:bg-[#282A2C] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8AB4F8]"
             title="Clear prompt"
+            aria-label="Clear prompt text"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -168,19 +171,23 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
 
       {/* Bottom Footer: Character Count & Gemini Optimize Pill Button */}
       <div className="flex flex-wrap items-center justify-between mt-3 gap-2">
-        <div className="flex items-center space-x-2 text-xs">
+        <div className="flex items-center space-x-2 text-xs" aria-live="polite">
           <span className={`${isTooLong ? 'text-red-500 font-bold' : 'text-[#444746] dark:text-[#9AA0A6]'}`}>
             {charCount.toLocaleString()} / {maxChars.toLocaleString()} characters
           </span>
           {isTooLong && (
-            <span className="text-red-500 text-[11px]">Exceeds character limit.</span>
+            <span className="text-red-500 text-[11px]" role="alert">Exceeds character limit.</span>
           )}
         </div>
 
         <div className="flex items-center space-x-2.5">
           {/* Progress step indicator */}
           {isOptimizing && progressStep && (
-            <div className="flex items-center space-x-2 text-xs text-[#1A73E8] dark:text-[#8AB4F8] font-medium bg-blue-50 dark:bg-[#1E2838] px-3.5 py-1 rounded-full border border-blue-200 dark:border-[#2B3E5A] animate-pulse">
+            <div
+              className="flex items-center space-x-2 text-xs text-[#1A73E8] dark:text-[#8AB4F8] font-medium bg-blue-50 dark:bg-[#1E2838] px-3.5 py-1 rounded-full border border-blue-200 dark:border-[#2B3E5A] animate-pulse"
+              role="status"
+              aria-live="polite"
+            >
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
               <span>{progressStep}</span>
             </div>
@@ -188,9 +195,12 @@ export const PromptInputPanel: React.FC<PromptInputPanelProps> = ({
 
           <button
             id="optimize-prompt-btn"
+            type="button"
             onClick={onOptimize}
             disabled={isEmpty || isTooLong || isOptimizing}
-            className={`flex items-center space-x-2 px-5 py-2 rounded-full font-medium text-xs sm:text-sm transition-all ${
+            aria-label={isOptimizing ? `Optimizing prompt: ${progressStep || 'Processing'}` : "Optimize prompt"}
+            aria-busy={isOptimizing}
+            className={`flex items-center space-x-2 px-5 py-2 rounded-full font-medium text-xs sm:text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8AB4F8] ${
               isEmpty || isTooLong || isOptimizing
                 ? 'bg-[#E0E2E0] dark:bg-[#282A2C] text-[#747775] dark:text-[#5F6368] cursor-not-allowed'
                 : 'bg-[#1A73E8] hover:bg-[#1B66CA] dark:bg-gradient-to-r dark:from-[#1A73E8] dark:via-[#1B66CA] dark:to-[#8AB4F8] text-white active:scale-[0.98]'

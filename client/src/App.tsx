@@ -10,6 +10,7 @@ import { WarningsBanner } from './components/WarningsBanner.js';
 import { WarningBanner } from './components/WarningBanner.js';
 import { CostArbitrageTable } from './components/CostArbitrageTable.js';
 import { executePrompt, fetchHealth, optimizePrompt, optimizePromptStream } from './lib/api.js';
+import { EXAMPLE_PROMPTS } from './lib/examples.js';
 import { getModelDisplayName } from './lib/models.js';
 import {
   ExecutionResult,
@@ -241,10 +242,12 @@ export const App: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
             <button
+              type="button"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2.5 rounded-full hover:bg-[#D3E3FD]/50 dark:hover:bg-[#282A2C] text-[#444746] dark:text-[#C4C7C5] transition-colors"
+              className="p-2.5 rounded-full hover:bg-[#D3E3FD]/50 dark:hover:bg-[#282A2C] text-[#444746] dark:text-[#C4C7C5] transition-colors focus-visible:ring-2 focus-visible:ring-[#8AB4F8]"
               title={isSidebarOpen ? 'Collapse menu' : 'Expand menu'}
               aria-label={isSidebarOpen ? 'Collapse menu' : 'Expand menu'}
+              aria-expanded={isSidebarOpen}
             >
               <Zap className="w-5 h-5 text-[#1A73E8] dark:text-[#8AB4F8]" />
             </button>
@@ -306,6 +309,38 @@ export const App: React.FC = () => {
                 Transform raw prompts into high-context structures and token-efficient variants with native Gemini token measurement.
               </p>
             </div>
+
+            {/* Quick-Start Example Cards (shown before first optimization) */}
+            {!optimizationResult && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-2 animate-fadeIn">
+                {EXAMPLE_PROMPTS.slice(0, 3).map((ex) => (
+                  <button
+                    type="button"
+                    key={ex.id}
+                    onClick={() => {
+                      setRawPrompt(ex.prompt);
+                      setCategory(ex.category);
+                    }}
+                    className="p-4 rounded-2xl bg-white dark:bg-[#1E1F20] border border-[#E0E2E0] dark:border-[#282A2C] hover:border-[#1A73E8] dark:hover:border-[#8AB4F8] text-left transition-all hover:shadow-md group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8AB4F8]"
+                    title={`Click to load: ${ex.title}`}
+                    aria-label={`Load example prompt: ${ex.title}`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[10px] font-bold text-[#1A73E8] dark:text-[#8AB4F8] uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-50 dark:bg-[#1E2838] border border-blue-100 dark:border-[#2B3E5A]">
+                        {ex.category}
+                      </span>
+                      <Sparkles className="w-3.5 h-3.5 text-[#9AA0A6] group-hover:text-[#8AB4F8] transition-colors" />
+                    </div>
+                    <h3 className="text-xs font-bold text-[#1F1F1F] dark:text-white mb-1">
+                      {ex.title}
+                    </h3>
+                    <p className="text-[11px] text-[#444746] dark:text-[#9AA0A6] line-clamp-2 leading-relaxed">
+                      {ex.description}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Global Error Banner */}
             {errorMessage && (
@@ -418,9 +453,11 @@ export const App: React.FC = () => {
                         </span>
                       </div>
                       <button
+                        type="button"
                         onClick={handleStopExecution}
                         id="global-stop-execution-btn"
-                        className="flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition-colors shadow-sm active:scale-[0.98]"
+                        aria-label="Stop prompt execution"
+                        className="flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition-colors shadow-sm active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-rose-400"
                       >
                         <Square className="w-3 h-3 fill-current" />
                         <span>Stop Execution</span>
@@ -537,14 +574,14 @@ export const App: React.FC = () => {
               </div>
             )}
 
-            {/* Scroll Spacer to clear the sticky footer */}
-            <div className="h-[450px] w-full flex-shrink-0" aria-hidden="true" />
+            {/* Clean bottom padding */}
+            <div className="pb-8 w-full flex-shrink-0" aria-hidden="true" />
           </div>
         </main>
 
-        {/* Locked Footer to Viewport */}
-        <div className="fixed bottom-0 left-0 right-0 w-full z-30 bg-gradient-to-t from-[#F0F4F9] via-[#F0F4F9] to-transparent dark:from-[#131314] dark:via-[#131314] pt-20 pb-6 px-4 flex justify-center pointer-events-none">
-          <div className="w-full max-w-[850px] pointer-events-auto">
+        {/* Docked Bottom Input Area: perfectly contained within main column, never overlaps sidebar or cards */}
+        <footer className="w-full shrink-0 z-20 bg-[#F0F4F9] dark:bg-[#131314] border-t border-[#E0E2E0] dark:border-[#282A2C] px-4 py-3 sm:py-4 flex justify-center shadow-lg">
+          <div className="w-full max-w-[900px]">
             <section aria-label="Prompt Input">
               <PromptInputPanel
                 rawPrompt={rawPrompt}
@@ -559,7 +596,7 @@ export const App: React.FC = () => {
               />
             </section>
           </div>
-        </div>
+        </footer>
       </div>
     </div>
   );

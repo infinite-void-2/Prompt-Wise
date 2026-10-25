@@ -31,29 +31,24 @@ body {
   background: #3c4043;
 }
 
-/* Gemini surface card styling (no harsh drop shadows) */
+/* Gemini surface card styling */
 .glass-panel {
-  background-color: #FFFFFF;
-  border: 1px solid #E0E2E0;
-}
-
-.dark .glass-panel,
-:is(.dark) .glass-panel {
   background-color: #1E1F20;
   border: 1px solid #282A2C;
 }
 
 .glass-panel-glow {
-  background-color: #FFFFFF;
-  border: 1px solid #C2E7FF;
-}
-
-.dark .glass-panel-glow,
-:is(.dark) .glass-panel-glow {
   background-color: #1E1F20;
   border: 1px solid #384252;
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.4), 0 0 16px -4px rgba(26, 115, 232, 0.15);
 }
 
 .mono-font {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Universal accessible focus ring for interactive elements */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #8AB4F8, 0 0 0 4px rgba(26, 115, 232, 0.25);
 }

@@ -20,25 +20,25 @@ export const WarningsBanner: React.FC<WarningsBannerProps> = React.memo(({ warni
             key={idx}
             className={`flex items-start space-x-3 p-3.5 rounded-xl border text-xs ${
               isInjection
-                ? 'bg-purple-950/40 border-purple-800/60 text-purple-200'
+                ? 'bg-[#282038] border-[#41335A] text-[#C58AF9]'
                 : isContradiction
-                ? 'bg-amber-950/40 border-amber-800/60 text-amber-200'
-                : 'bg-amber-950/30 border-amber-800/50 text-amber-300'
+                ? 'bg-[#3B2B1B] border-[#5E4325] text-[#FDD663]'
+                : 'bg-[#3B2B1B]/80 border-[#5E4325]/80 text-[#FDD663]'
             }`}
           >
             {isInjection ? (
-              <ShieldAlert className="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5" />
+              <ShieldAlert className="w-4 h-4 text-[#C58AF9] flex-shrink-0 mt-0.5" />
             ) : isContradiction ? (
-              <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="w-4 h-4 text-[#FDD663] flex-shrink-0 mt-0.5" />
             ) : (
-              <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-4 h-4 text-[#FDD663] flex-shrink-0 mt-0.5" />
             )}
 
             <div className="space-y-0.5">
-              <span className="font-semibold uppercase tracking-wider text-[10px] block opacity-80">
+              <span className="font-semibold uppercase tracking-wider text-[10px] block opacity-90">
                 {warning.code}
               </span>
-              <p className="leading-relaxed">{warning.message}</p>
+              <p className="leading-relaxed text-[#E3E3E3]">{warning.message}</p>
             </div>
           </div>
         );

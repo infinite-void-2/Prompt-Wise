@@ -17,6 +17,15 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({
 }) => {
   const [selectedFamilyFilter, setSelectedFamilyFilter] = useState<string>('all');
 
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const familyFilters = [
@@ -40,18 +49,18 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({
   const getModelTokenizerBadge = (model: ModelInfo): { label: string; color: string } => {
     const id = model.id.toLowerCase();
     if (id.includes('o200k') || id.includes('gpt-4o') || id.startsWith('o1') || id.startsWith('o3')) {
-      return { label: 'o200k_base', color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' };
+      return { label: 'o200k_base', color: 'bg-[#1E2E25] text-[#81C995] border-[#2E573D]' };
     }
     if (id.includes('cl100k') || id.includes('gpt-4') || id.includes('gpt-3.5') || id.includes('deepseek')) {
-      return { label: 'cl100k_base', color: 'bg-blue-500/20 text-blue-300 border-blue-500/30' };
+      return { label: 'cl100k_base', color: 'bg-[#1E2838] text-[#8AB4F8] border-[#2B3E5A]' };
     }
     if (id.includes('claude')) {
-      return { label: 'Claude BPE', color: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
+      return { label: 'Claude BPE', color: 'bg-[#3B2B1B] text-[#FDD663] border-[#5E4325]' };
     }
     if (id.includes('llama') || id.includes('nemotron') || id.startsWith('nvidia/')) {
-      return { label: '128k BPE', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
+      return { label: '128k BPE', color: 'bg-[#282038] text-[#C58AF9] border-[#41335A]' };
     }
-    return { label: 'Gemini Native', color: 'bg-teal-500/20 text-teal-300 border-teal-500/30' };
+    return { label: 'Gemini Native', color: 'bg-[#1E2E25] text-[#81C995] border-[#2E573D]' };
   };
 
   const matchesFamilyFilter = (model: ModelInfo): boolean => {
@@ -76,41 +85,47 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="model-modal-title"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn"
+    >
+      <div className="bg-[#1E1F20] border border-[#3C4043] rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+        <div className="px-6 py-4 border-b border-[#282A2C] flex items-center justify-between bg-[#131314]/80">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+            <div className="w-8 h-8 rounded-lg bg-[#1E2E25] text-[#81C995] flex items-center justify-center border border-[#2E573D]">
               <Cpu className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Select AI Model & Tokenizer Family</h3>
-              <p className="text-xs text-slate-400">Choose your optimization target model and dynamic tokenizer</p>
+              <h3 id="model-modal-title" className="text-base font-bold text-white">Select AI Model & Tokenizer Family</h3>
+              <p className="text-xs text-[#9AA0A6]">Choose your optimization target model and dynamic tokenizer</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+            aria-label="Close model selector modal"
+            className="text-[#9AA0A6] hover:text-white p-1.5 rounded-lg hover:bg-[#282A2C] transition-colors focus-visible:ring-2 focus-visible:ring-[#8AB4F8]"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Model Family Filter Bar */}
-        <div className="px-6 py-2.5 border-b border-slate-800 bg-slate-950/30 flex flex-wrap items-center gap-1.5 text-xs">
-          <div className="flex items-center text-slate-400 mr-1 text-[11px] font-medium">
-            <Binary className="w-3.5 h-3.5 mr-1 text-slate-500" />
+        <div className="px-6 py-2.5 border-b border-[#282A2C] bg-[#131314]/50 flex flex-wrap items-center gap-1.5 text-xs">
+          <div className="flex items-center text-[#9AA0A6] mr-1 text-[11px] font-medium">
+            <Binary className="w-3.5 h-3.5 mr-1 text-[#9AA0A6]" />
             <span>Filter:</span>
           </div>
           {familyFilters.map((f) => (
             <button
               key={f.id}
               onClick={() => setSelectedFamilyFilter(f.id)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all whitespace-nowrap ${
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#8AB4F8] ${
                 selectedFamilyFilter === f.id
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
-                  : 'bg-slate-800/60 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                  ? 'bg-[#1E2E25] text-[#81C995] border border-[#2E573D] shadow-sm'
+                  : 'bg-[#282A2C] text-[#9AA0A6] hover:text-white hover:bg-[#3C4043]'
               }`}
             >
               {f.label}
@@ -126,8 +141,8 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({
 
             return (
               <div key={p.key} className="space-y-2.5">
-                <div className="flex items-center space-x-2 text-xs font-bold text-slate-300 uppercase tracking-wider">
-                  <p.icon className="w-3.5 h-3.5 text-emerald-400" />
+                <div className="flex items-center space-x-2 text-xs font-bold text-[#E3E3E3] uppercase tracking-wider">
+                  <p.icon className="w-3.5 h-3.5 text-[#81C995]" />
                   <span>{p.name}</span>
                 </div>
 
@@ -137,48 +152,50 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({
                     const tokenizerBadge = getModelTokenizerBadge(model);
 
                     return (
-                      <div
+                      <button
                         key={model.id}
+                        type="button"
                         onClick={() => {
                           onSelectModel(model.id);
                           onClose();
                         }}
-                        className={`p-3.5 rounded-xl border text-left cursor-pointer transition-all flex flex-col justify-between space-y-2 ${
+                        aria-pressed={isSelected}
+                        className={`p-3.5 rounded-xl border text-left cursor-pointer transition-all flex flex-col justify-between space-y-2 focus-visible:ring-2 focus-visible:ring-[#8AB4F8] ${
                           isSelected
-                            ? 'bg-emerald-950/40 border-emerald-500/80 shadow-md shadow-emerald-500/10 ring-1 ring-emerald-500/30'
-                            : 'bg-slate-800/40 border-slate-700/60 hover:bg-slate-800/80 hover:border-slate-600'
+                            ? 'bg-[#1E2E25] border-[#2E573D] shadow-sm ring-1 ring-[#81C995]/50'
+                            : 'bg-[#131314] border-[#282A2C] hover:bg-[#282A2C] hover:border-[#3C4043]'
                         }`}
                       >
-                        <div className="flex items-start justify-between">
+                        <div className="flex items-start justify-between w-full">
                           <div>
                             <span className="font-bold text-white text-xs block">{model.name}</span>
-                            <span className="text-[10px] text-slate-400 font-mono">{model.id}</span>
+                            <span className="text-[10px] text-[#9AA0A6] font-mono">{model.id}</span>
                           </div>
                           {isSelected && (
-                            <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-slate-950">
+                            <div className="w-5 h-5 rounded-full bg-[#81C995] flex items-center justify-center text-[#131314]">
                               <Check className="w-3 h-3 stroke-[3]" />
                             </div>
                           )}
                         </div>
 
-                        <p className="text-[11px] text-slate-300 leading-snug line-clamp-2">
+                        <p className="text-[11px] text-[#C4C7C5] leading-snug line-clamp-2">
                           {model.description}
                         </p>
 
-                        <div className="flex items-center justify-between pt-1 border-t border-slate-700/40 text-[10px] gap-2">
+                        <div className="flex items-center justify-between pt-1 border-t border-[#282A2C] text-[10px] gap-2 w-full">
                           <div className="flex items-center space-x-1.5 min-w-0">
-                            <span className="px-1.5 py-0.5 rounded bg-slate-700/50 text-slate-300 font-medium truncate">
+                            <span className="px-1.5 py-0.5 rounded bg-[#282A2C] text-[#C4C7C5] font-medium truncate">
                               {model.badge}
                             </span>
                             <span className={`px-1.5 py-0.5 rounded border text-[9px] font-mono font-medium flex-shrink-0 ${tokenizerBadge.color}`}>
                               {tokenizerBadge.label}
                             </span>
                           </div>
-                          <span className="text-slate-400 font-mono text-[10px] flex-shrink-0">
+                          <span className="text-[#9AA0A6] font-mono text-[10px] flex-shrink-0">
                             {model.inputPrice}
                           </span>
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
@@ -188,11 +205,11 @@ export const ModelSelectorModal: React.FC<ModelSelectorModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between text-xs text-slate-400">
-          <span>Active Selection: <strong className="text-emerald-400 font-mono">{selectedModel}</strong></span>
+        <div className="px-6 py-3 border-t border-[#282A2C] bg-[#131314] flex items-center justify-between text-xs text-[#9AA0A6]">
+          <span>Active Selection: <strong className="text-[#81C995] font-mono">{selectedModel}</strong></span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+            className="px-4 py-1.5 rounded-lg bg-[#1A73E8] hover:bg-[#1B66CA] text-white font-medium transition-colors focus-visible:ring-2 focus-visible:ring-[#8AB4F8]"
           >
             Done
           </button>

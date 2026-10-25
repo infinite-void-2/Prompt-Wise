@@ -29,7 +29,7 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-[#E0E2E0] dark:border-[#282A2C]">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-[#81C995] flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-[#E6F4EA] dark:bg-[#1E2E25] text-[#137333] dark:text-[#81C995] flex items-center justify-center flex-shrink-0">
             <Coins className="w-5 h-5" />
           </div>
           <div>
@@ -37,7 +37,7 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
               <h3 className="text-base font-semibold text-[#1F1F1F] dark:text-white tracking-tight">
                 Multi-Model Cost Arbitrage Router
               </h3>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-[#81C995] text-[10px] font-bold uppercase tracking-wider">
+              <span className="px-2 py-0.5 rounded-full bg-[#E6F4EA] dark:bg-[#1E2E25] text-[#137333] dark:text-[#81C995] text-[10px] font-bold uppercase tracking-wider border border-[#CEEAD6] dark:border-[#2E573D]">
                 Live Spend Comparison
               </span>
             </div>
@@ -52,18 +52,21 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
           <button
             type="button"
             onClick={() => setShowFormula(!showFormula)}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-[#E0E2E0] dark:border-[#3C4043] text-xs text-[#444746] dark:text-[#C4C7C5] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-expanded={showFormula}
+            aria-label="Toggle cost formula breakdown"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-[#E0E2E0] dark:border-[#3C4043] text-xs text-[#444746] dark:text-[#C4C7C5] hover:bg-[#F0F4F9] dark:hover:bg-[#282A2C] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8AB4F8]"
             title="Toggle Formula Breakdown"
           >
-            <Calculator className="w-3.5 h-3.5" />
+            <Calculator className="w-3.5 h-3.5 text-[#8AB4F8]" />
             <span className="hidden sm:inline">Formula</span>
           </button>
 
-          <div className="flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-[#131314] border border-[#E0E2E0] dark:border-[#282A2C] text-xs">
+          <div className="flex items-center p-0.5 rounded-xl bg-[#F0F4F9] dark:bg-[#131314] border border-[#E0E2E0] dark:border-[#282A2C] text-xs" role="group" aria-label="Invocation call volume scale">
             <button
               type="button"
               onClick={() => setScale('single')}
-              className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+              aria-pressed={scale === 'single'}
+              className={`px-2.5 py-1 rounded-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8AB4F8] ${
                 scale === 'single'
                   ? 'bg-white dark:bg-[#282A2C] text-[#1F1F1F] dark:text-white shadow-xs'
                   : 'text-[#444746] dark:text-[#9AA0A6] hover:text-[#1F1F1F] dark:hover:text-white'
@@ -74,7 +77,8 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
             <button
               type="button"
               onClick={() => setScale('1k')}
-              className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+              aria-pressed={scale === '1k'}
+              className={`px-2.5 py-1 rounded-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8AB4F8] ${
                 scale === '1k'
                   ? 'bg-white dark:bg-[#282A2C] text-[#1F1F1F] dark:text-white shadow-xs'
                   : 'text-[#444746] dark:text-[#9AA0A6] hover:text-[#1F1F1F] dark:hover:text-white'
@@ -85,7 +89,8 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
             <button
               type="button"
               onClick={() => setScale('1m')}
-              className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+              aria-pressed={scale === '1m'}
+              className={`px-2.5 py-1 rounded-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8AB4F8] ${
                 scale === '1m'
                   ? 'bg-white dark:bg-[#282A2C] text-[#1F1F1F] dark:text-white shadow-xs'
                   : 'text-[#444746] dark:text-[#9AA0A6] hover:text-[#1F1F1F] dark:hover:text-white'
@@ -99,15 +104,15 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
 
       {/* Formula Explanation Callout */}
       {showFormula && (
-        <div className="mb-4 p-3 rounded-xl bg-slate-50 dark:bg-[#131314] border border-slate-200 dark:border-[#282A2C] text-xs text-[#444746] dark:text-[#C4C7C5] animate-fadeIn">
+        <div className="mb-4 p-3 rounded-xl bg-[#F0F4F9] dark:bg-[#131314] border border-[#E0E2E0] dark:border-[#282A2C] text-xs text-[#444746] dark:text-[#C4C7C5] animate-fadeIn">
           <div className="flex items-center justify-between mb-1">
             <span className="font-semibold text-[#1F1F1F] dark:text-white flex items-center gap-1.5">
-              <Calculator className="w-3.5 h-3.5 text-emerald-500" />
+              <Calculator className="w-3.5 h-3.5 text-[#81C995]" />
               Invocation Arbitrage Formula:
             </span>
-            <span className="font-mono text-[10px] text-slate-500">Benchmark: GPT-4o Flagship ($2.50 in / $10.00 out per 1M)</span>
+            <span className="font-mono text-[10px] text-[#747775] dark:text-[#9AA0A6]">Benchmark: GPT-4o Flagship ($2.50 in / $10.00 out per 1M)</span>
           </div>
-          <p className="font-mono text-[11px] text-emerald-700 dark:text-[#81C995] bg-emerald-50 dark:bg-emerald-950/20 p-2 rounded-lg border border-emerald-200 dark:border-emerald-900/30">
+          <p className="font-mono text-[11px] text-[#137333] dark:text-[#81C995] bg-[#E6F4EA] dark:bg-[#1E2E25] p-2 rounded-lg border border-[#CEEAD6] dark:border-[#2E573D]">
             Total Spend = (T_in · P_in) + (T_out · P_out)
           </p>
         </div>
@@ -148,8 +153,8 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
                   key={item.model}
                   className={`transition-colors ${
                     isBest
-                      ? 'bg-emerald-50/50 dark:bg-emerald-950/20 hover:bg-emerald-100/40 dark:hover:bg-emerald-950/30'
-                      : 'hover:bg-slate-50 dark:hover:bg-[#282A2C]/30'
+                      ? 'bg-emerald-50/50 dark:bg-[#1E2E25]/40 hover:bg-emerald-100/40 dark:hover:bg-[#1E2E25]/60'
+                      : 'hover:bg-[#F0F4F9] dark:hover:bg-[#282A2C]/30'
                   }`}
                 >
                   {/* Model & Provider */}
@@ -158,7 +163,7 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
                       <div className="font-mono font-bold text-[#1F1F1F] dark:text-white text-xs">
                         {item.model}
                       </div>
-                      <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-[#282A2C] text-[#444746] dark:text-[#C4C7C5] text-[10px]">
+                      <span className="px-2 py-0.5 rounded-md bg-[#F0F4F9] dark:bg-[#282A2C] text-[#444746] dark:text-[#C4C7C5] text-[10px]">
                         {item.provider}
                       </span>
                     </div>
@@ -176,7 +181,7 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
 
                   {/* Projected Spend */}
                   <td className="py-3 px-3">
-                    <span className="font-mono font-bold text-emerald-700 dark:text-[#81C995] text-xs">
+                    <span className="font-mono font-bold text-[#137333] dark:text-[#81C995] text-xs">
                       {displayCost}
                     </span>
                   </td>
@@ -184,8 +189,8 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
                   {/* Savings % */}
                   <td className="py-3 px-3">
                     <div className="flex items-center space-x-1.5">
-                      <TrendingDown className="w-3.5 h-3.5 text-emerald-600 dark:text-[#81C995]" />
-                      <span className="font-bold text-emerald-700 dark:text-[#81C995] font-mono">
+                      <TrendingDown className="w-3.5 h-3.5 text-[#137333] dark:text-[#81C995]" />
+                      <span className="font-bold text-[#137333] dark:text-[#81C995] font-mono">
                         +{item.savingsPercentVsBaseline.toFixed(1)}%
                       </span>
                     </div>
@@ -194,18 +199,18 @@ export const CostArbitrageTable: React.FC<CostArbitrageTableProps> = React.memo(
                   {/* Badge / Route Recommendation */}
                   <td className="py-3 px-3 text-right">
                     {isBest ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-[#81C995] text-[10px] font-bold uppercase tracking-wider border border-emerald-300 dark:border-emerald-800">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-[#81C995]" />
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-[#1E2E25] text-[#137333] dark:text-[#81C995] text-[10px] font-bold uppercase tracking-wider border border-[#CEEAD6] dark:border-[#2E573D]">
+                        <CheckCircle2 className="w-3 h-3 text-[#137333] dark:text-[#81C995]" />
                         Optimal Arbitrage
                       </span>
                     ) : item.model.includes('haiku') ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-[#282A2C] text-[#444746] dark:text-[#C4C7C5] text-[10px] font-medium">
-                        <Layers className="w-3 h-3 text-amber-500" />
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#F0F4F9] dark:bg-[#282A2C] text-[#444746] dark:text-[#C4C7C5] text-[10px] font-medium">
+                        <Layers className="w-3 h-3 text-[#F9AB00]" />
                         Balanced Router
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-[#282A2C] text-[#444746] dark:text-[#C4C7C5] text-[10px] font-medium">
-                        <Coins className="w-3 h-3 text-blue-500" />
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#F0F4F9] dark:bg-[#282A2C] text-[#444746] dark:text-[#C4C7C5] text-[10px] font-medium">
+                        <Coins className="w-3 h-3 text-[#1A73E8] dark:text-[#8AB4F8]" />
                         Cost-Effective
                       </span>
                     )}

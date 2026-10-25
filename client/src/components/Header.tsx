@@ -55,13 +55,16 @@ export const Header: React.FC<HeaderProps> = React.memo(({
                       value={tempName}
                       onChange={(e) => setTempName(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
-                      className="bg-[#282a2c] text-white text-base font-medium px-2.5 py-1 rounded-xl border border-[#8ab4f8] focus:outline-none"
+                      aria-label="Application name"
+                      className="bg-[#282a2c] text-white text-base font-medium px-2.5 py-1 rounded-xl border border-[#8ab4f8] focus:outline-none focus:ring-2 focus:ring-[#8ab4f8]"
                       autoFocus
                     />
                     <button
+                      type="button"
                       onClick={handleSaveName}
-                      className="p-1.5 rounded-full bg-[#1a73e8] hover:bg-[#1b66ca] text-white transition-colors"
+                      className="p-1.5 rounded-full bg-[#1a73e8] hover:bg-[#1b66ca] text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8ab4f8]"
                       title="Save name"
+                      aria-label="Save application name"
                     >
                       <Check className="w-3.5 h-3.5" />
                     </button>
@@ -72,12 +75,14 @@ export const Header: React.FC<HeaderProps> = React.memo(({
                       {appName}
                     </h1>
                     <button
+                      type="button"
                       onClick={() => {
                         setTempName(appName);
                         setIsEditingName(true);
                       }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity text-[#9aa0a6] hover:text-[#e3e3e3] p-1 rounded-full hover:bg-[#282a2c]"
+                      className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-[#9aa0a6] hover:text-[#e3e3e3] p-1 rounded-full hover:bg-[#282a2c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8ab4f8]"
                       title="Rename application"
+                      aria-label="Rename application"
                       id="rename-app-btn"
                     >
                       <Edit2 className="w-3 h-3" />
@@ -98,10 +103,13 @@ export const Header: React.FC<HeaderProps> = React.memo(({
           <div className="flex items-center space-x-2 sm:space-x-3 text-xs">
             {/* Interactive Model Selector Button */}
             <button
+              type="button"
               onClick={() => setIsModelModalOpen(true)}
               id="model-selector-btn"
               title="Click to switch AI Model"
-              className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-[#282a2c] hover:bg-[#3c4043] border border-[#3c4043]/60 transition-all text-[#e3e3e3] shadow-sm group"
+              aria-label={`Current model: ${currentModelInfo ? currentModelInfo.name : selectedModel}. Click to switch model.`}
+              aria-haspopup="dialog"
+              className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-[#282a2c] hover:bg-[#3c4043] border border-[#3c4043]/60 transition-all text-[#e3e3e3] shadow-sm group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8ab4f8]"
             >
               <Cpu className="w-3.5 h-3.5 text-[#8ab4f8]" />
               <span className="text-[#9aa0a6] hidden md:inline">Model:</span>
@@ -113,13 +121,16 @@ export const Header: React.FC<HeaderProps> = React.memo(({
 
             {/* Provider Credentials Button */}
             <button
+              type="button"
               onClick={() => setIsKeyModalOpen(true)}
               id="provider-keys-btn"
               title="Configure API Keys & View Providers"
-              className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-[#282a2c] hover:bg-[#3c4043] border border-[#3c4043]/60 text-[#c4c7c5] transition-all"
+              aria-label="Configure API Keys & View Providers"
+              aria-haspopup="dialog"
+              className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-[#282a2c] hover:bg-[#3c4043] border border-[#3c4043]/60 text-[#c4c7c5] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8ab4f8]"
             >
               <Key className="w-3.5 h-3.5 text-[#fdd663]" />
-              <span>API Keys</span>
+              <span className="hidden sm:inline">API Keys</span>
             </button>
 
             {/* API Connection Health Badge */}
@@ -131,6 +142,8 @@ export const Header: React.FC<HeaderProps> = React.memo(({
                   ? 'bg-[#282a2c] border-[#3c4043] text-[#9aa0a6]'
                   : 'bg-[#3b2b1b] border-[#5e4325] text-[#fdd663]'
               }`}
+              role="status"
+              aria-label={health?.hasApiKey ? "Engine Online" : healthLoading ? "Checking engine status" : "API Key Required"}
             >
               {health?.hasApiKey ? (
                 <>
